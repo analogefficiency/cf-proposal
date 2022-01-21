@@ -1,12 +1,14 @@
 package sqlite3helper
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
 
-func InitDb() {
-	_, err := os.Stat("./shortener.db")
+func InitDb(dbname string) {
+	filename := fmt.Sprintf("./%s.db", dbname)
+	_, err := os.Stat(filename)
 	if err != nil {
 		if os.IsNotExist(err) {
 			log.Printf("No Sqlite3 database found in project root, creating...")
