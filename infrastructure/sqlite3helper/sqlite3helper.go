@@ -12,7 +12,7 @@ func InitDb(dbname string) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			log.Printf("No Sqlite3 database found in project root, creating...")
-			file, err := os.Create("shortener.db")
+			file, err := os.Create(filename)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
@@ -20,6 +20,6 @@ func InitDb(dbname string) {
 			log.Printf("Sqlite3 database created")
 		}
 	} else {
-		log.Printf("Exiting sqlite3 database found in project root")
+		log.Printf("Existing sqlite3 database found in project root")
 	}
 }
