@@ -2,7 +2,6 @@ package main
 
 import (
 	"cf-proposal/infrastructure/sqlite3helper"
-	"database/sql"
 	"log"
 	"net/http"
 
@@ -15,12 +14,6 @@ func main() {
 
 	log.Printf("Starting up on http://localhost:%s", port)
 	sqlite3helper.InitDb("shortener")
-
-	conn, err := sql.Open("sqlite3", "./shortener.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close()
 
 	r := chi.NewRouter()
 	log.Fatal(http.ListenAndServe(":"+port, r))
