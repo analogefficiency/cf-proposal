@@ -27,6 +27,7 @@ func (uc UrlController) Routes() chi.Router {
 }
 
 func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
+
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -49,12 +50,12 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(400)
-		logservice.LogError("400", "GET", createpath, err)
+		logservice.LogError("400", r.Method, createpath, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, _ := json.Marshal(createdUrl)
 	w.Write(jsonResp)
-	logservice.LogHttpRequest("200", "POST", createpath)
+	logservice.LogHttpRequest("200", r.Method, createpath)
 }
