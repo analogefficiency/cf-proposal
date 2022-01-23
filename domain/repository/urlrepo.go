@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"cf-proposal/common/helper"
 	"cf-proposal/domain/model"
 	"context"
 	"database/sql"
@@ -19,9 +20,8 @@ func InitUrlRepo(db *sql.DB) *UrlRepo {
 
 func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto, error) {
 	url, err := u.q.CreateUrl(ctx, CreateUrlParams{
-		UrlID:    urlDto.UrlID,
 		LongUrl:  urlDto.LongUrl,
-		ShortUrl: urlDto.ShortUrl,
+		ShortUrl: helper.GetShortUrl(urlDto.LongUrl),
 		ExpirationDt: sql.NullInt32{
 			Int32: urlDto.ExpirationDt,
 		},
@@ -32,7 +32,7 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto
 	return model.UrlDto{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
-		ShortUrl:     url.ShortUrl,
+		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", helper.GetShortUrl(url.ShortUrl)),
 		ExpirationDt: url.ExpirationDt.Int32,
 	}, nil
 }

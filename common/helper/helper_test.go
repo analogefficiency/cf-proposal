@@ -10,8 +10,8 @@ func TestUniqueShortUrl(t *testing.T) {
 	longUrlOne := "https://www.youtube.com/watch?v=YS4e4q9oBaU"
 	longUrlTwo := "https://www.youtube.com/watch?v=uBPXNREhZZw"
 
-	shortUrlOne := getShortUrl(longUrlOne)
-	shortUrlTwo := getShortUrl(longUrlTwo)
+	shortUrlOne := GetShortUrl(longUrlOne)
+	shortUrlTwo := GetShortUrl(longUrlTwo)
 
 	if shortUrlOne == shortUrlTwo {
 		t.Errorf("Hashes should not match")
@@ -20,12 +20,12 @@ func TestUniqueShortUrl(t *testing.T) {
 
 func TestNonDuplicatedShortUrl(t *testing.T) {
 	longUrl := "https://www.youtube.com/watch?v=YS4e4q9oBaU"
-	shortUrlOne := getShortUrl(longUrl)
+	shortUrlOne := GetShortUrl(longUrl)
 
 	// Delay in requests
 	time.Sleep(3 * time.Second)
 
-	shortUrlTwo := getShortUrl(longUrl)
+	shortUrlTwo := GetShortUrl(longUrl)
 
 	if shortUrlOne != shortUrlTwo {
 		t.Errorf("Hashes for the same url should match")

@@ -9,24 +9,18 @@ import (
 )
 
 const createUrl = `-- name: CreateUrl :one
-INSERT INTO URL (url_id, long_url, short_url, expiration_dt)
-VALUES($1, $2, $3, $4) RETURNING url_id, long_url, short_url, expiration_dt
+INSERT INTO URL (long_url, short_url, expiration_dt)
+VALUES($1, $2, $3) RETURNING url_id, long_url, short_url, expiration_dt
 `
 
 type CreateUrlParams struct {
-	UrlID        int32         `json:"url_id"`
 	LongUrl      string        `json:"long_url"`
 	ShortUrl     string        `json:"short_url"`
 	ExpirationDt sql.NullInt32 `json:"expiration_dt"`
 }
 
 func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, error) {
-	row := q.db.QueryRowContext(ctx, createUrl,
-		arg.UrlID,
-		arg.LongUrl,
-		arg.ShortUrl,
-		arg.ExpirationDt,
-	)
+	row := q.db.QueryRowContext(ctx, createUrl, arg.LongUrl, arg.ShortUrl, arg.ExpirationDt)
 	var i Url
 	err := row.Scan(
 		&i.UrlID,
