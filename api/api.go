@@ -46,11 +46,6 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//conn, err := sql.Open("sqlite3", "./shortener.db")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//defer conn.Close()
 	urlrepo := repository.InitUrlRepo(sqlite3helper.DbConn)
 	urlservice := urlservice.Init(urlrepo)
 	createdUrl, err := urlservice.Create(context.Background(), url)
@@ -58,7 +53,6 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 		logservice.LogError("400", "GET", createpath, err)
 		return
 	}
-	//conn.Close()
 
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, _ := json.Marshal(createdUrl)

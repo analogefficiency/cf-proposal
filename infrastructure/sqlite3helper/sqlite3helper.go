@@ -32,7 +32,6 @@ func InitDb(dbname string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//defer DbConn.Close()
 
 	if buildSchema {
 		initTables(DbConn, filename)
