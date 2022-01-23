@@ -38,5 +38,6 @@ Sample URL Shortener Service
 ```
 01/23/2022 - Short URLS technically should be unique too. Updated dictionary.
 ```
-
+## Trade-offs
+1. A validator of some sort will be needed for the UrlDto payload; however, foregoing a validation layer until MVP is achived. Run risk of burning too many hours going into the different permutations for a URL and date. If time allows i'll circle around and add validation there. 
 
