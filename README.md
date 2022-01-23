@@ -2,7 +2,7 @@
 Sample URL Shortener Service
 
 # Minimum Viable Product
-- [ ] POST Endpoint taking in a LONG URL returning a SHORT URL
+- [X] POST Endpoint taking in a LONG URL returning a SHORT URL
 - [ ] GET Endpoint that redirects short urls to the requested long URL
 - [ ] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
 - [X] Data survives restarts
@@ -27,7 +27,8 @@ Sample URL Shortener Service
 **Postman: Jan 22, 2022**
 - Used for testing endpoints
 
-`brew install postman`
+**[DB Browser for SQL Lite](https://sqlitebrowser.org/): Jan 22, 2022**
+- Used for confirming results on database.
 
 ## Data Model
 [Data Dictionary](https://docs.google.com/spreadsheets/d/1lYeBe29FgTnOEaFF-xYTOj10ipwja7ZW6d8-eWqQOho/edit?usp=sharing)
@@ -40,4 +41,4 @@ Sample URL Shortener Service
 ```
 ## Trade-offs
 1. A validator of some sort will be needed for the UrlDto payload; however, foregoing a validation layer until MVP is achived. Run risk of burning too many hours going into the different permutations for a URL and date. If time allows i'll circle around and add validation there. 
-
+2. Passing database connection as a global variable. Would like to spend more time looking at implementing another pattern, but current implementation is working - will focus on remaining MVP items. 
