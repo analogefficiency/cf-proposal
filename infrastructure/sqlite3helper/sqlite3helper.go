@@ -7,7 +7,9 @@ import (
 	"os"
 )
 
-func InitDb(dbname string) *sql.DB {
+var Connection *sql.DB
+
+func InitDb(dbname string) {
 	filename := fmt.Sprintf("./%s.db", dbname)
 	buildSchema := false
 	_, err := os.Stat(filename)
@@ -26,15 +28,14 @@ func InitDb(dbname string) *sql.DB {
 		log.Printf("Existing sqlite3 database found in project root")
 	}
 
-	conn, err := sql.Open("sqlite3", filename)
+	Connection, err = sql.Open("sqlite3", filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
+	defer Connection.Close()
 
 	if buildSchema {
-		initTables(conn, filename)
+		initTables(Connection, filename)
 	}
 	log.Printf("Sqlite3 database ready!")
-	return conn
 }
