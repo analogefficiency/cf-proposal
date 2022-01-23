@@ -23,11 +23,20 @@ Sample URL Shortener Service
 
 **sqlc: Jan 22, 2022**
 - Making up for lack of Go foundation using SQLC for boilerplate, db connections. Leverage existing SQL knowledge to focus time on weaker areas.
+
+**Postman: Jan 22, 2022**
+- Used for testing endpoints
+
+`brew install postman`
+
 ## Data Model
 [Data Dictionary](https://docs.google.com/spreadsheets/d/1lYeBe29FgTnOEaFF-xYTOj10ipwja7ZW6d8-eWqQOho/edit?usp=sharing)
 ```
-1/22/2022 - Dates stored as INTEGER as Sqlite has no built-in date types. UNIX date seems the better route for 
-            comparisons later.
+01/22/2022 - Dates stored as INTEGER as Sqlite has no built-in date types. UNIX date seems the better route for 
+             comparisons later.
+```
+```
+01/23/2022 - Short URLS technically should be unique too. Updated dictionary.
 ```
 
 
