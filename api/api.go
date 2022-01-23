@@ -19,11 +19,14 @@ type UrlController struct{}
 
 const createpath types.Path = "/create"
 
+var urlRepo *repository.UrlRepo
+var urlService *urlservice.Url
+
 func (uc UrlController) Routes() chi.Router {
 	router := chi.NewRouter()
-
 	router.Post(string(createpath), uc.HandleCreate)
-
+	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
+	urlService = urlservice.Init(urlRepo)
 	return router
 }
 
@@ -46,10 +49,12 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	urlrepo := repository.InitUrlRepo(sqlite3helper.DbConn)
-	urlservice := urlservice.Init(urlrepo)
-	createdUrl, err := urlservice.Create(context.Background(), url)
+	//urlrepo := repository.InitUrlRepo(sqlite3helper.DbConn)
+	//urlservice := urlservice.Init(urlrepo)
+	createdUrl, err := urlService.Create(context.Background(), url)
+
 	if err != nil {
+		w.WriteHeader(400)
 		logservice.LogError("400", "GET", createpath, err)
 		return
 	}
