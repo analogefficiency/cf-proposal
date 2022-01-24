@@ -30,14 +30,15 @@ func (uc UrlController) UrlRoutes() chi.Router {
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
-	_, err := urlService.GetLongUrl(context.Background(), shortUrl)
+	data, err := urlService.GetLongUrl(context.Background(), shortUrl)
 	if err != nil {
 		w.WriteHeader(400)
 		logservice.LogError(http.StatusBadRequest, r.Method, createpath, err)
 		return
 	}
-
 	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	http.Redirect(w, r, data.LongUrl, http.StatusFound)
 }
 
 func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
