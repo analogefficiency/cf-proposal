@@ -16,6 +16,8 @@ func main() {
 	log.Printf("Starting up on http://localhost:%s", port)
 	sqlite3helper.InitDb("shortener")
 	r := chi.NewRouter()
-	r.Mount("/url", api.UrlController{}.Routes())
+	r.Mount("/url", api.UrlController{}.UrlRoutes())
+	r.Mount("/{shortUrl}", api.UrlController{}.RedirectRoutes())
+
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

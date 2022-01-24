@@ -6,6 +6,7 @@ import (
 	"cf-proposal/domain/services/urlservice"
 )
 
+const basePath types.Path = "/"
 const createpath types.Path = "/create"
 
 var urlRepo *repository.UrlRepo

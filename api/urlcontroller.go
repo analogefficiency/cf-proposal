@@ -2,6 +2,7 @@ package api
 
 import (
 	"cf-proposal/common/logservice"
+	"cf-proposal/common/types"
 	"cf-proposal/domain/model"
 	"cf-proposal/domain/repository"
 	"cf-proposal/domain/services/urlservice"
@@ -16,7 +17,18 @@ import (
 
 type UrlController struct{}
 
-func (uc UrlController) Routes() chi.Router {
+func (uc UrlController) Init() {
+	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
+	urlService = urlservice.Init(urlRepo)
+}
+
+func (uc UrlController) RedirectRoutes() chi.Router {
+	router := chi.NewRouter()
+	router.Post(string(basePath), uc.HandleRedirect)
+	return router
+}
+
+func (uc UrlController) UrlRoutes() chi.Router {
 	router := chi.NewRouter()
 	router.Post(string(createpath), uc.HandleCreate)
 
@@ -24,6 +36,10 @@ func (uc UrlController) Routes() chi.Router {
 	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
 	urlService = urlservice.Init(urlRepo)
 	return router
+}
+
+func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
+	logservice.LogHttpRequest(http.StatusText(http.StatusOK), r.Method, types.Path(r.URL.Path))
 }
 
 func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
@@ -50,12 +66,12 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(400)
-		logservice.LogError("400", r.Method, createpath, err)
+		logservice.LogError(http.StatusText(http.StatusBadRequest), r.Method, createpath, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, _ := json.Marshal(createdUrl)
 	w.Write(jsonResp)
-	logservice.LogHttpRequest("200", r.Method, createpath)
+	logservice.LogHttpRequest(http.StatusText(http.StatusOK), r.Method, createpath)
 }
