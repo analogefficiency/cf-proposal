@@ -3,7 +3,7 @@ Sample URL Shortener Service
 
 # Minimum Viable Product
 - [X] POST Endpoint taking in a LONG URL returning a SHORT URL
-- [ ] GET Endpoint that redirects short urls to the requested long URL
+- [X] GET Endpoint that redirects short urls to the requested long URL
 - [ ] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
 - [X] Data survives restarts
 - [ ] DELETE Endpoint allowing a short URL to be deleted
