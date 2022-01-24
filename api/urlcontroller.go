@@ -9,7 +9,6 @@ import (
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -82,6 +81,10 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("id").(string)
-	fmt.Println(id)
-	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+	err := urlService.DeleteUrl(context.Background(), id)
+	if err != nil {
+		logservice.LogError(http.StatusBadGateway, r.Method, types.Path(r.URL.Path), err)
+	} else {
+		logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+	}
 }

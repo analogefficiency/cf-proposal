@@ -27,7 +27,7 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto
 		},
 	})
 	if err != nil {
-		return model.UrlDto{}, fmt.Errorf("Error: %w", err)
+		return model.UrlDto{}, fmt.Errorf("%w", err)
 	}
 	return model.UrlDto{
 		UrlID:        url.UrlID,
@@ -46,4 +46,12 @@ func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUr
 		UrlID:   returnValue.UrlID,
 		LongUrl: returnValue.LongUrl,
 	}, nil
+}
+
+func (u *UrlRepo) DeleteUrl(ctx context.Context, id int32) error {
+	err := u.q.DeleteUrl(ctx, id)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	return nil
 }

@@ -4,11 +4,13 @@ import (
 	"cf-proposal/domain/model"
 	"context"
 	"fmt"
+	"strconv"
 )
 
 type UrlRepo interface {
 	Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto, error)
 	GetLongUrl(ctx context.Context, shortUrl string) (model.LongUrlDto, error)
+	DeleteUrl(ctx context.Context, id int32) error
 }
 
 type Url struct {
@@ -35,4 +37,14 @@ func (u *Url) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUrlDto
 		return model.LongUrlDto{}, fmt.Errorf("%w", err)
 	}
 	return longUrl, nil
+}
+
+func (u *Url) DeleteUrl(ctx context.Context, id string) error {
+
+	convertedId, _ := strconv.Atoi(id)
+	err := u.repo.DeleteUrl(ctx, int32(convertedId))
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	return nil
 }
