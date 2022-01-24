@@ -25,3 +25,4 @@ hs_err_pid*
 # Misc #
 .DS_Store
 shortener.db
+shortener.db-journal
