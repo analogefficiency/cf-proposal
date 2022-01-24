@@ -9,6 +9,7 @@ import (
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -25,6 +26,10 @@ func (uc UrlController) InitController() {
 func (uc UrlController) UrlRoutes() chi.Router {
 	router := chi.NewRouter()
 	router.Post(string(createpath), uc.HandleCreate)
+	router.Route(string(deletepath), func(r chi.Router) {
+		r.Use(DeleteCtx)
+		r.Delete("/", uc.HandleDelete)
+	})
 	return router
 }
 
@@ -73,4 +78,10 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	jsonResp, _ := json.Marshal(createdUrl)
 	w.Write(jsonResp)
 	logservice.LogHttpRequest(http.StatusOK, r.Method, createpath)
+}
+
+func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value("id").(string)
+	fmt.Println(id)
+	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
 }
