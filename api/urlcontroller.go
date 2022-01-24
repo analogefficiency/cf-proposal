@@ -39,7 +39,7 @@ func (uc UrlController) UrlRoutes() chi.Router {
 }
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
-	logservice.LogHttpRequest(http.StatusText(http.StatusOK), r.Method, types.Path(r.URL.Path))
+	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
 }
 
 func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
@@ -66,12 +66,12 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(400)
-		logservice.LogError(http.StatusText(http.StatusBadRequest), r.Method, createpath, err)
+		logservice.LogError(http.StatusBadRequest, r.Method, createpath, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, _ := json.Marshal(createdUrl)
 	w.Write(jsonResp)
-	logservice.LogHttpRequest(http.StatusText(http.StatusOK), r.Method, createpath)
+	logservice.LogHttpRequest(http.StatusOK, r.Method, createpath)
 }
