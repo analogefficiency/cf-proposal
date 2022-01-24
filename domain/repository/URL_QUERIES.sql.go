@@ -32,18 +32,18 @@ func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, erro
 }
 
 const findRedirectByShortUrl = `-- name: FindRedirectByShortUrl :one
-SELECT url_id, long_url, short_url, expiration_dt FROM URL
+SELECT url_id, long_url FROM URL
 WHERE short_url = $1
 `
 
-func (q *Queries) FindRedirectByShortUrl(ctx context.Context, shortUrl string) (Url, error) {
+type FindRedirectByShortUrlRow struct {
+	UrlID   int32  `json:"url_id"`
+	LongUrl string `json:"long_url"`
+}
+
+func (q *Queries) FindRedirectByShortUrl(ctx context.Context, shortUrl string) (FindRedirectByShortUrlRow, error) {
 	row := q.db.QueryRowContext(ctx, findRedirectByShortUrl, shortUrl)
-	var i Url
-	err := row.Scan(
-		&i.UrlID,
-		&i.LongUrl,
-		&i.ShortUrl,
-		&i.ExpirationDt,
-	)
+	var i FindRedirectByShortUrlRow
+	err := row.Scan(&i.UrlID, &i.LongUrl)
 	return i, err
 }

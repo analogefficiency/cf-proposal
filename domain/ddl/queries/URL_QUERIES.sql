@@ -1,5 +1,5 @@
 -- name: FindRedirectByShortUrl :one
-SELECT * FROM URL
+SELECT url_id, long_url FROM URL
 WHERE short_url = $1;
 
 -- name: CreateUrl :one
