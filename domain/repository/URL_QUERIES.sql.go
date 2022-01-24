@@ -31,6 +31,16 @@ func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, erro
 	return i, err
 }
 
+const deleteUrl = `-- name: DeleteUrl :exec
+DELETE FROM URL 
+WHERE url_id = $1
+`
+
+func (q *Queries) DeleteUrl(ctx context.Context, urlID int32) error {
+	_, err := q.db.ExecContext(ctx, deleteUrl, urlID)
+	return err
+}
+
 const findRedirectByShortUrl = `-- name: FindRedirectByShortUrl :one
 SELECT url_id, long_url FROM URL
 WHERE short_url = $1
