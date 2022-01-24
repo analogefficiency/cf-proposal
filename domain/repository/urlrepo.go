@@ -32,7 +32,7 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto
 	return model.UrlDto{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
-		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", helper.GetShortUrl(url.ShortUrl)),
+		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
 		ExpirationDt: url.ExpirationDt.Int32,
 	}, nil
 }
