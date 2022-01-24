@@ -36,3 +36,14 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto
 		ExpirationDt: url.ExpirationDt.Int32,
 	}, nil
 }
+
+func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUrlDto, error) {
+	returnValue, err := u.q.FindRedirectByShortUrl(ctx, shortUrl)
+	if err != nil {
+		return model.LongUrlDto{}, fmt.Errorf("%w", err)
+	}
+	return model.LongUrlDto{
+		UrlID:   returnValue.UrlID,
+		LongUrl: returnValue.LongUrl,
+	}, nil
+}

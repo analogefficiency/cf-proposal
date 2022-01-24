@@ -9,6 +9,7 @@ import (
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -17,28 +18,20 @@ import (
 
 type UrlController struct{}
 
-func (uc UrlController) Init() {
+func (uc UrlController) InitController() {
 	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
 	urlService = urlservice.Init(urlRepo)
-}
-
-func (uc UrlController) RedirectRoutes() chi.Router {
-	router := chi.NewRouter()
-	router.Post(string(basePath), uc.HandleRedirect)
-	return router
 }
 
 func (uc UrlController) UrlRoutes() chi.Router {
 	router := chi.NewRouter()
 	router.Post(string(createpath), uc.HandleCreate)
-
-	// Init repository and service for URL entity
-	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
-	urlService = urlservice.Init(urlRepo)
 	return router
 }
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
+	shortUrl := r.Context().Value("shortUrl").(string)
+	fmt.Println(shortUrl)
 	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
 }
 
