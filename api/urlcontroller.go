@@ -9,7 +9,6 @@ import (
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -31,7 +30,13 @@ func (uc UrlController) UrlRoutes() chi.Router {
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
-	fmt.Println(shortUrl)
+	_, err := urlService.GetLongUrl(context.Background(), shortUrl)
+	if err != nil {
+		w.WriteHeader(400)
+		logservice.LogError(http.StatusBadRequest, r.Method, createpath, err)
+		return
+	}
+
 	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
 }
 
