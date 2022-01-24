@@ -6,7 +6,7 @@ Sample URL Shortener Service
 - [X] GET Endpoint that redirects short urls to the requested long URL
 - [ ] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
 - [X] Data survives restarts
-- [ ] DELETE Endpoint allowing a short URL to be deleted
+- [X] DELETE Endpoint allowing a short URL to be deleted
 - [ ] Runnable locally with simple instructions
 - [ ] Documentation includes build and deploy instructions
 - [ ] Tests able to be executed locally OR within a test environment
