@@ -5,6 +5,7 @@ import (
 	"cf-proposal/common/types"
 	"cf-proposal/domain/model"
 	"cf-proposal/domain/repository"
+	"cf-proposal/domain/services/historyservice"
 	"cf-proposal/domain/services/urlservice"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
@@ -19,7 +20,10 @@ type UrlController struct{}
 
 func (uc UrlController) InitController() {
 	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
+	historyRepo = repository.InitHistoryRepo(sqlite3helper.DbConn)
+
 	urlService = urlservice.Init(urlRepo)
+	historyService = historyservice.Init(historyRepo)
 }
 
 func (uc UrlController) UrlRoutes() chi.Router {
@@ -41,6 +45,7 @@ func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+	historyService.Insert(context.Background(), data.UrlID)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	http.Redirect(w, r, data.LongUrl, http.StatusFound)
 }

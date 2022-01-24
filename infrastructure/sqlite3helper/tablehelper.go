@@ -13,7 +13,8 @@ const (
 
 var tables = map[string]string{
 	/** No foreign key constraints */
-	"URL": filepath.Join(schemaPath, "/URL.sql"),
+	"URL":   filepath.Join(schemaPath, "/URL.sql"),
+	"TABLE": filepath.Join(schemaPath, "/HISTORY.sql"),
 }
 
 func getTables() map[string]string {

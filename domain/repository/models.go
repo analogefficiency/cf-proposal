@@ -7,9 +7,9 @@ import (
 )
 
 type History struct {
-	HistoryID int32         `json:"history_id"`
-	UrlID     string        `json:"url_id"`
-	AccessDt  sql.NullInt32 `json:"access_dt"`
+	HistoryID int32  `json:"history_id"`
+	UrlID     int32  `json:"url_id"`
+	AccessDt  string `json:"access_dt"`
 }
 
 type Url struct {
