@@ -9,12 +9,14 @@ import (
 
 const (
 	schemaPath = "./domain/ddl/schema"
+	viewPath   = "./domain/ddl/views"
 )
 
 var tables = map[string]string{
 	/** No foreign key constraints */
-	"URL":   filepath.Join(schemaPath, "/URL.sql"),
-	"TABLE": filepath.Join(schemaPath, "/HISTORY.sql"),
+	"URL":        filepath.Join(schemaPath, "/URL.sql"),
+	"HISTORY":    filepath.Join(schemaPath, "/HISTORY.sql"),
+	"STATISTICS": filepath.Join(viewPath, "/statistics.sql"),
 }
 
 func getTables() map[string]string {

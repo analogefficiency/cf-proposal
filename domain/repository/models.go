@@ -12,6 +12,13 @@ type History struct {
 	AccessDt  string `json:"access_dt"`
 }
 
+type Statistic struct {
+	UrlID           int32 `json:"url_id"`
+	TwentyFourHours int32 `json:"twenty_four_hours"`
+	LastSevenDays   int32 `json:"last_seven_days"`
+	AllTime         int32 `json:"all_time"`
+}
+
 type Url struct {
 	UrlID        int32         `json:"url_id"`
 	LongUrl      string        `json:"long_url"`
