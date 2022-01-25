@@ -4,12 +4,34 @@ Sample URL Shortener Service
 # Minimum Viable Product
 - [X] POST Endpoint taking in a LONG URL returning a SHORT URL
 - [X] GET Endpoint that redirects short urls to the requested long URL
-- [ ] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
+- [X] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
 - [X] Data survives restarts
 - [X] DELETE Endpoint allowing a short URL to be deleted
 - [ ] Runnable locally with simple instructions
-- [ ] Documentation includes build and deploy instructions
-- [ ] Tests able to be executed locally OR within a test environment
+- [X] Documentation includes build and deploy instructions
+- [ ] Tests able to be executed locally OR within a test environment 
+
+# Build Information
+🚨 These instuctions are based on a OSX workstation using [homebrew](https://brew.sh/). 
+
+Clone the repo at your preferred workspace location
+
+`git clone https://github.com/analogefficiency/cf-proposal.git`
+
+This project will be using `Docker` to build and run the application. Docker can be installed via the following command:
+
+`brew install --cask docker`
+
+From the root directory of the project run the following command to create the `Docker` image to run:
+
+`docker build --tag cf-proposal .`
+
+Start the application container via the following command:
+
+`docker run --publish 9000:9000 cf-proposal`
+
+Press `Ctrl-C` to stop the container. 
+
 
 # Assumptions
 
