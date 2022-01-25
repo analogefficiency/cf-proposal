@@ -11,6 +11,41 @@ Sample URL Shortener Service
 - [X] Documentation includes build and deploy instructions
 - [ ] Tests able to be executed locally OR within a test environment 
 
+# API
+**Redirect short url to a long url**
+```
+       Path: /{shortUrl}
+     Method: GET
+Description: Redirects request to perform GET request of URL associated with the path parameter, shortUrl
+ Parameters: @pathparameter - shortUrl: Hashed version of the long url assocated with the short url
+```
+**Creating a short url**
+```
+       Path: /url/create
+     Method: POST
+Description: Creates short url based on values provided in request body
+ Parameters: @json { LongUrl: String, AccessDt: String }
+    Returns: @json { UrlId: int32, LongUrl: String, ShortUrl: String, AccessDt: String }
+```
+**Deleting a short url**
+
+```
+       Path: /url/delete/{id}
+     Method: DELETE
+Description: Deletes short url based on id provided in path parameters
+ Parameters: @pathparamter - id: The id for the short url
+```
+**Getting statistics for a short url**
+
+```
+       Path: /statistics/{id}
+     Method: GET
+Description: Retrives statistics for a given short url id. Returns usage of short url within last 24 hours, 7 days, and all time. 
+ Parameters: @pathparameter - id: The id for the short url
+    Returns: @json { UrlId: int32, TwentyFourHours: int32, LastSevenDays: int32, AllTime: int32 }
+```
+
+
 # Build Information
 🚨 These instuctions are based on a OSX workstation using [homebrew](https://brew.sh/). 
 
