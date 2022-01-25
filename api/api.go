@@ -14,6 +14,7 @@ import (
 const basePath types.Path = "/"
 const createpath types.Path = "/create"
 const deletepath types.Path = "/delete/{id}"
+const statisticspath types.Path = "/{id}"
 
 var urlRepo *repository.UrlRepo
 var urlService *urlservice.Url
@@ -28,7 +29,7 @@ func RedirectCtx(next http.Handler) http.Handler {
 	})
 }
 
-func DeleteCtx(next http.Handler) http.Handler {
+func IdCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), "id", chi.URLParam(r, "id"))
 		next.ServeHTTP(w, r.WithContext(ctx))

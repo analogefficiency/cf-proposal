@@ -30,7 +30,7 @@ func (uc UrlController) UrlRoutes() chi.Router {
 	router := chi.NewRouter()
 	router.Post(string(createpath), uc.HandleCreate)
 	router.Route(string(deletepath), func(r chi.Router) {
-		r.Use(DeleteCtx)
+		r.Use(IdCtx)
 		r.Delete("/", uc.HandleDelete)
 	})
 	return router

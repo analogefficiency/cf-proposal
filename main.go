@@ -22,6 +22,6 @@ func main() {
 		r.Use(api.RedirectCtx)
 		r.Get("/", api.UrlController{}.HandleRedirect)
 	})
-
+	r.Mount("/statistics", api.StatisticsController{}.StatisticsRoutes())
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }
