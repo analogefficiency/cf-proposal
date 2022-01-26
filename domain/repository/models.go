@@ -2,9 +2,7 @@
 
 package repository
 
-import (
-	"database/sql"
-)
+import ()
 
 type History struct {
 	HistoryID int32  `json:"history_id"`
@@ -20,8 +18,8 @@ type Statistic struct {
 }
 
 type Url struct {
-	UrlID        int32         `json:"url_id"`
-	LongUrl      string        `json:"long_url"`
-	ShortUrl     string        `json:"short_url"`
-	ExpirationDt sql.NullInt32 `json:"expiration_dt"`
+	UrlID        int32  `json:"url_id"`
+	LongUrl      string `json:"long_url"`
+	ShortUrl     string `json:"short_url"`
+	ExpirationDt string `json:"expiration_dt"`
 }

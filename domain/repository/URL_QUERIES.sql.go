@@ -5,7 +5,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUrl = `-- name: CreateUrl :one
@@ -14,9 +13,9 @@ VALUES($1, $2, $3) RETURNING url_id, long_url, short_url, expiration_dt
 `
 
 type CreateUrlParams struct {
-	LongUrl      string        `json:"long_url"`
-	ShortUrl     string        `json:"short_url"`
-	ExpirationDt sql.NullInt32 `json:"expiration_dt"`
+	LongUrl      string `json:"long_url"`
+	ShortUrl     string `json:"short_url"`
+	ExpirationDt string `json:"expiration_dt"`
 }
 
 func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, error) {

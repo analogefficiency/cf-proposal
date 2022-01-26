@@ -20,11 +20,9 @@ func InitUrlRepo(db *sql.DB) *UrlRepo {
 
 func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto, error) {
 	url, err := u.q.CreateUrl(ctx, CreateUrlParams{
-		LongUrl:  urlDto.LongUrl,
-		ShortUrl: helper.GetShortUrl(urlDto.LongUrl),
-		ExpirationDt: sql.NullInt32{
-			Int32: urlDto.ExpirationDt,
-		},
+		LongUrl:      urlDto.LongUrl,
+		ShortUrl:     helper.GetShortUrl(urlDto.LongUrl),
+		ExpirationDt: urlDto.ExpirationDt,
 	})
 	if err != nil {
 		return model.UrlDto{}, fmt.Errorf("%w", err)
@@ -33,7 +31,7 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
 		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
-		ExpirationDt: url.ExpirationDt.Int32,
+		ExpirationDt: url.ExpirationDt,
 	}, nil
 }
 
