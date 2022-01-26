@@ -6,7 +6,7 @@ Sample URL Shortener Service
 - [X] GET Endpoint that redirects short urls to the requested long URL
 - [X] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
 - [ ] Short URLS can expire or live forever
-- [ ] Data survives restarts
+- [X] Data survives restarts
 - [X] DELETE Endpoint allowing a short URL to be deleted
 - [X] Runnable locally with simple instructions
 - [X] Documentation includes build and deploy instructions
@@ -62,9 +62,13 @@ From the root directory of the project run the following command to create the `
 
 `docker build --tag cf-proposal .`
 
+In order for sqlite3 databases to persist after shutdown of a docker container, we'll need to create a docker volume:
+
+`docker volume create cf-proposal-db`
+
 Start the application container via the following command:
 
-`docker run --publish 9000:9000 cf-proposal`
+`docker run --publish 9000:9000 -v cf-proposal-db:/app/sqlite cf-proposal`
 
 Press `Ctrl-C` to stop the container. 
 
