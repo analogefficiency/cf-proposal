@@ -12,7 +12,7 @@ import (
 var DbConn *sql.DB
 
 func InitDb(dbname string) {
-	filename := fmt.Sprintf("./%s.db", dbname)
+	filename := fmt.Sprintf("./sqlite/%s.db", dbname)
 	buildSchema := false
 	_, err := os.Stat(filename)
 	if err != nil {

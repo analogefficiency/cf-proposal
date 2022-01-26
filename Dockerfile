@@ -17,6 +17,7 @@ ADD api ./api
 ADD common ./common
 ADD domain ./domain
 ADD infrastructure ./infrastructure
+ADD sqlite ./sqlite
 
 RUN go build -o /cf-proposal
 

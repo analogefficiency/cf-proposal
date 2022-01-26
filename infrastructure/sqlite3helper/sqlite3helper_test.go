@@ -8,7 +8,7 @@ import (
 
 func TestInitDbOk(t *testing.T) {
 	dbname := "initDbOk"
-	filename := fmt.Sprintf("./%s.db", dbname)
+	filename := fmt.Sprintf("./sqlite/%s.db", dbname)
 	_, err := os.Stat(filename)
 	if err != nil {
 		if !os.IsNotExist(err) {
