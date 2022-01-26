@@ -5,7 +5,7 @@ Sample URL Shortener Service
 - [X] POST Endpoint taking in a LONG URL returning a SHORT URL
 - [X] GET Endpoint that redirects short urls to the requested long URL
 - [X] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
-- [ ] Short URLS can expire or live forever
+- [X] Short URLS can expire or live forever
 - [X] Data survives restarts
 - [X] DELETE Endpoint allowing a short URL to be deleted
 - [X] Runnable locally with simple instructions
@@ -92,6 +92,7 @@ The application is split into 4 layers:
 
 ## Data Model
 [Data Dictionary](https://docs.google.com/spreadsheets/d/1lYeBe29FgTnOEaFF-xYTOj10ipwja7ZW6d8-eWqQOho/edit?usp=sharing)
+
 The above linked Google Sheet is a depiction of the data model current in use. As summary of the more notable decisions is as follows:
 - **Date fields using TEXT typing**: Sqlite does not have a native date type but the built-in date functions can infer date so long as the string or integer is in the correct format. 
 - **Statistics View**: To reduce the code necessary at the service layer, the statistics view aggregates the "entrys" by their defined date conditions. See `statistics.sql` for details on how the statistics are calculated. The service layer just reads from the view for the particular url requested.
