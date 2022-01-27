@@ -37,17 +37,7 @@ func (uc UrlController) UrlRoutes() chi.Router {
 	return r
 }
 
-func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
-	shortUrl := r.Context().Value("shortUrl").(string)
-	data, err := urlService.GetLongUrl(context.Background(), shortUrl)
-	if err != nil {
-		helper.HandleHttpError(w, r, err, 400)
-		return
-	}
-	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
-	historyService.Insert(context.Background(), data.UrlID)
-	http.Redirect(w, r, data.LongUrl, http.StatusFound)
-}
+// Add Handlers below here, in alpha order
 
 func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
@@ -91,4 +81,16 @@ func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
 	}
+}
+
+func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
+	shortUrl := r.Context().Value("shortUrl").(string)
+	data, err := urlService.GetLongUrl(context.Background(), shortUrl)
+	if err != nil {
+		helper.HandleHttpError(w, r, err, 400)
+		return
+	}
+	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+	historyService.Insert(context.Background(), data.UrlID)
+	http.Redirect(w, r, data.LongUrl, http.StatusFound)
 }
