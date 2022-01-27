@@ -27,6 +27,6 @@ func (h *History) Insert(ctx context.Context, id int32) (repository.History, err
 	if err != nil {
 		return repository.History{}, fmt.Errorf("%w", err)
 	}
-	logservice.LogInfo(fmt.Sprintf("Writing short url %b accessed %s to history", id, time.Now().Format("2006-01-02 15:04:05")))
+	logservice.LogInfo(fmt.Sprintf("Writing short url %d accessed %s to history", id, time.Now().Format("2006-01-02 15:04:05")))
 	return inserted, nil
 }
