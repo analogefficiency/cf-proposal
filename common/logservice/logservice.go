@@ -14,3 +14,6 @@ func LogHttpRequest(responseCode int, httpRequest string, path types.Path) {
 func LogError(responseCode int, httpRequest string, path types.Path, err error) {
 	log.Printf("[%s] \033[31m%s\033[0m %s %s %s", logcategory.ERROR, http.StatusText(responseCode), httpRequest, path, err.Error())
 }
+func LogInfo(message string) {
+	log.Printf("[%s] %s", logcategory.INFO, message)
+}

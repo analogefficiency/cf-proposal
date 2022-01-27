@@ -1,6 +1,7 @@
 package api
 
 import (
+	"cf-proposal/common/helper"
 	"cf-proposal/common/logservice"
 	"cf-proposal/common/types"
 	"cf-proposal/domain/model"
@@ -40,13 +41,11 @@ func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
 	data, err := urlService.GetLongUrl(context.Background(), shortUrl)
 	if err != nil {
-		w.WriteHeader(400)
-		logservice.LogError(http.StatusBadRequest, r.Method, createpath, err)
+		helper.HandleHttpError(w, r, err, 400)
 		return
 	}
 	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
 	historyService.Insert(context.Background(), data.UrlID)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	http.Redirect(w, r, data.LongUrl, http.StatusFound)
 }
 
