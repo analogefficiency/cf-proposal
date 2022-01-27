@@ -27,13 +27,13 @@ func (uc UrlController) InitController() {
 }
 
 func (uc UrlController) UrlRoutes() chi.Router {
-	router := chi.NewRouter()
-	router.Post(string(createpath), uc.HandleCreate)
-	router.Route(string(deletepath), func(r chi.Router) {
+	r := chi.NewRouter()
+	r.Post(string(createpath), uc.HandleCreate)
+	r.Route(string(deletepath), func(r chi.Router) {
 		r.Use(IdCtx)
 		r.Delete("/", uc.HandleDelete)
 	})
-	return router
+	return r
 }
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
