@@ -44,7 +44,7 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		helper.HandleHttpError(w, r, err, 500)
 		return
 	}
 
@@ -52,25 +52,17 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &url)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(422)
-		if err := json.NewEncoder(w).Encode(err); err != nil {
-			panic(err)
-		}
+		helper.HandleHttpError(w, r, err, 422)
 		return
 	}
 
 	createdUrl, err := urlService.Create(context.Background(), url)
-
 	if err != nil {
-		w.WriteHeader(400)
-		logservice.LogError(http.StatusBadRequest, r.Method, createpath, err)
+		helper.HandleHttpError(w, r, err, 400)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	jsonResp, _ := json.Marshal(createdUrl)
-	w.Write(jsonResp)
-	logservice.LogHttpRequest(http.StatusOK, r.Method, createpath)
+	helper.HandleHttpOk(w, r, createdUrl)
 }
 
 func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
