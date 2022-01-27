@@ -1,13 +1,11 @@
 package api
 
 import (
-	"cf-proposal/common/logservice"
-	"cf-proposal/common/types"
+	"cf-proposal/common/helper"
 	"cf-proposal/domain/repository"
 	"cf-proposal/domain/services/statisticsservice"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -34,13 +32,9 @@ func (sc StatisticsController) HandleGetStatistics(w http.ResponseWriter, r *htt
 	id := r.Context().Value("id").(string)
 	data, serviceErr := statisticsService.GetStatistic(context.Background(), id)
 	if serviceErr != nil {
-		w.WriteHeader(400)
-		logservice.LogError(http.StatusBadRequest, r.Method, createpath, serviceErr)
+		helper.HandleHttpError(w, r, serviceErr, 400)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	jsonResp, _ := json.Marshal(data)
-	w.Write(jsonResp)
-	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+	helper.HandleHttpOk(w, r, data)
 }
