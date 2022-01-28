@@ -1,8 +1,11 @@
 package statisticsservice
 
 import (
+	"cf-proposal/common/helper"
+	"cf-proposal/common/messages"
 	"cf-proposal/domain/model"
 	"context"
+	"database/sql"
 	"fmt"
 	"strconv"
 )
@@ -25,11 +28,19 @@ func (s *Statistic) GetStatistic(ctx context.Context, id string) (model.Statisti
 
 	convertedId, convErr := strconv.Atoi(id)
 	if convErr != nil {
-		return model.StatisticsDto{}, fmt.Errorf("%w", convErr)
+		return model.StatisticsDto{}, &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
 	}
-	longUrl, repoErr := s.repo.GetStatistic(ctx, int32(convertedId))
-	if repoErr != nil {
-		return model.StatisticsDto{}, fmt.Errorf("%w", repoErr)
+	statistic, err := s.repo.GetStatistic(ctx, int32(convertedId))
+	if err != nil {
+		if err.Error() == sql.ErrNoRows.Error() {
+			return model.StatisticsDto{
+				UrlID:           int32(convertedId),
+				TwentyFourHours: 0,
+				LastSevenDays:   0,
+				AllTime:         0,
+			}, nil
+		}
+		return model.StatisticsDto{}, fmt.Errorf("%w", err)
 	}
-	return longUrl, nil
+	return statistic, nil
 }
