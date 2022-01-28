@@ -5,10 +5,9 @@ import (
 	"cf-proposal/common/logservice"
 	"cf-proposal/common/messages"
 	"cf-proposal/common/types"
-	"cf-proposal/domain/model"
-	"cf-proposal/domain/repository"
-	"cf-proposal/domain/services/historyservice"
-	"cf-proposal/domain/services/urlservice"
+	"cf-proposal/domain/datastore"
+	"cf-proposal/domain/repo/historyrepository"
+	"cf-proposal/domain/repo/urlrepository"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"database/sql"
@@ -24,11 +23,11 @@ import (
 type UrlController struct{}
 
 func (uc UrlController) InitController() {
-	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
-	historyRepo = repository.InitHistoryRepo(sqlite3helper.DbConn)
+	urldatastore = datastore.InitUrlDatastore(sqlite3helper.DbConn)
+	historydatastore = datastore.InitHistoryDatastore(sqlite3helper.DbConn)
 
-	urlService = urlservice.Init(urlRepo)
-	historyService = historyservice.Init(historyRepo)
+	urlrepo = urlrepository.Init(urldatastore)
+	histrepo = historyrepository.Init(historydatastore)
 }
 
 func (uc UrlController) UrlRoutes() chi.Router {
@@ -52,18 +51,18 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var url model.UrlDto
+	var url datastore.Url
 	err = json.Unmarshal(body, &url)
 	if err != nil {
 		helper.HandleHttpError(w, r, err, 422)
 		return
 	}
 
-	createdUrl, err := urlService.Create(context.Background(), url)
+	createdUrl, err := urlrepo.Create(context.Background(), url)
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
 			logservice.LogInfo(fmt.Sprintf(messages.SHORT_URL_EXISTS, url.LongUrl))
-			urlDto, err := urlService.GetShortUrlByLongUrl(context.Background(), url.LongUrl)
+			urlDto, err := urlrepo.GetShortUrlByLongUrl(context.Background(), url.LongUrl)
 			if err != nil {
 				helper.HandleHttpError(w, r, err, 400)
 			}
@@ -79,7 +78,7 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("id").(string)
-	err := urlService.DeleteUrl(context.Background(), id)
+	err := urlrepo.DeleteUrl(context.Background(), id)
 	if err != nil {
 		logservice.LogError(http.StatusBadGateway, r.Method, types.Path(r.URL.Path), err)
 	} else {
@@ -89,7 +88,7 @@ func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
-	data, err := urlService.GetLongUrl(context.Background(), shortUrl)
+	data, err := urlrepo.GetLongUrl(context.Background(), shortUrl)
 	if err != nil {
 		if strings.Contains(err.Error(), sql.ErrNoRows.Error()) {
 			helper.HandleHttpError(w, r, &helper.CustomError{Message: fmt.Sprintf(messages.SHORT_URL_DOES_NOT_EXIST, shortUrl)}, 400)
@@ -99,6 +98,6 @@ func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
-	historyService.Insert(context.Background(), data.UrlID)
+	histrepo.Insert(context.Background(), data.UrlID)
 	http.Redirect(w, r, data.LongUrl, http.StatusFound)
 }

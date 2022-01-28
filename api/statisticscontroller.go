@@ -2,9 +2,9 @@ package api
 
 import (
 	"cf-proposal/common/helper"
-	"cf-proposal/domain/repository"
-	"cf-proposal/domain/services/statisticsservice"
-	"cf-proposal/domain/services/urlservice"
+	"cf-proposal/domain/datastore"
+	"cf-proposal/domain/repo/statisticsrepository"
+	"cf-proposal/domain/repo/urlrepository"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"net/http"
@@ -15,11 +15,11 @@ import (
 type StatisticsController struct{}
 
 func (sc StatisticsController) InitController() {
-	statisticsRepo = repository.InitStatisticsRepo(sqlite3helper.DbConn)
-	statisticsService = statisticsservice.Init(statisticsRepo)
+	statisticsdatastore = datastore.InitStatisticsDatastore(sqlite3helper.DbConn)
+	statrepo = statisticsrepository.Init(statisticsdatastore)
 
-	urlRepo = repository.InitUrlRepo(sqlite3helper.DbConn)
-	urlService = urlservice.Init(urlRepo)
+	urldatastore = datastore.InitUrlDatastore(sqlite3helper.DbConn)
+	urlrepo = urlrepository.Init(urldatastore)
 }
 
 func (sc StatisticsController) StatisticsRoutes() chi.Router {
@@ -33,12 +33,12 @@ func (sc StatisticsController) StatisticsRoutes() chi.Router {
 
 func (sc StatisticsController) HandleGetStatistics(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("id").(string)
-	_, err := urlService.GetUrl(context.Background(), id)
+	_, err := urlrepo.GetUrl(context.Background(), id)
 	if err != nil {
 		helper.HandleHttpError(w, r, err, 400)
 		return
 	}
-	statistic, err := statisticsService.GetStatistic(context.Background(), id)
+	statistic, err := statrepo.GetStatistic(context.Background(), id)
 	if err != nil {
 		helper.HandleHttpError(w, r, err, 400)
 		return

@@ -1,4 +1,4 @@
-package repository
+package datastore
 
 import (
 	"context"
@@ -11,7 +11,7 @@ type HistoryRepo struct {
 	q *Queries
 }
 
-func InitHistoryRepo(db *sql.DB) *HistoryRepo {
+func InitHistoryDatastore(db *sql.DB) *HistoryRepo {
 	return &HistoryRepo{
 		q: New(db),
 	}

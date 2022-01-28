@@ -1,9 +1,8 @@
-package repository
+package datastore
 
 import (
 	"cf-proposal/common/helper"
 	"cf-proposal/common/messages"
-	"cf-proposal/domain/model"
 	"context"
 	"database/sql"
 	"fmt"
@@ -13,22 +12,22 @@ type UrlRepo struct {
 	q *Queries
 }
 
-func InitUrlRepo(db *sql.DB) *UrlRepo {
+func InitUrlDatastore(db *sql.DB) *UrlRepo {
 	return &UrlRepo{
 		q: New(db),
 	}
 }
 
-func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto, error) {
+func (u *UrlRepo) Create(ctx context.Context, urlDto Url) (Url, error) {
 	url, err := u.q.CreateUrl(ctx, CreateUrlParams{
 		LongUrl:      urlDto.LongUrl,
 		ShortUrl:     helper.GetShortUrl(urlDto.LongUrl),
 		ExpirationDt: urlDto.ExpirationDt,
 	})
 	if err != nil {
-		return model.UrlDto{}, fmt.Errorf("%w", err)
+		return Url{}, fmt.Errorf("%w", err)
 	}
-	return model.UrlDto{
+	return Url{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
 		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
@@ -44,12 +43,12 @@ func (u *UrlRepo) DeleteUrl(ctx context.Context, id int32) error {
 	return nil
 }
 
-func (u *UrlRepo) GetUrl(ctx context.Context, id int32) (model.UrlDto, error) {
+func (u *UrlRepo) GetUrl(ctx context.Context, id int32) (Url, error) {
 	url, err := u.q.GetUrl(ctx, id)
 	if err != nil {
-		return model.UrlDto{}, &helper.CustomError{Message: fmt.Sprintf(messages.ENTITY_DOES_NOT_EXIST, "Short Url", id)}
+		return Url{}, &helper.CustomError{Message: fmt.Sprintf(messages.ENTITY_DOES_NOT_EXIST, "Short Url", id)}
 	}
-	return model.UrlDto{
+	return Url{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
 		ShortUrl:     url.ShortUrl,
@@ -57,23 +56,23 @@ func (u *UrlRepo) GetUrl(ctx context.Context, id int32) (model.UrlDto, error) {
 	}, nil
 }
 
-func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUrlDto, error) {
+func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (Url, error) {
 	returnValue, err := u.q.FindRedirectByShortUrl(ctx, shortUrl)
 	if err != nil {
-		return model.LongUrlDto{}, fmt.Errorf("%w", err)
+		return Url{}, fmt.Errorf("%w", err)
 	}
-	return model.LongUrlDto{
+	return Url{
 		UrlID:   returnValue.UrlID,
 		LongUrl: returnValue.LongUrl,
 	}, nil
 }
 
-func (u *UrlRepo) GetShortUrlByLongUrl(ctx context.Context, longUrl string) (model.UrlDto, error) {
+func (u *UrlRepo) GetShortUrlByLongUrl(ctx context.Context, longUrl string) (Url, error) {
 	url, err := u.q.FindShortUrlByLongUrl(ctx, longUrl)
 	if err != nil {
-		return model.UrlDto{}, fmt.Errorf("%w", err)
+		return Url{}, fmt.Errorf("%w", err)
 	}
-	return model.UrlDto{
+	return Url{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
 		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),

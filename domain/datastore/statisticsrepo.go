@@ -1,7 +1,6 @@
-package repository
+package datastore
 
 import (
-	"cf-proposal/domain/model"
 	"context"
 	"database/sql"
 	"fmt"
@@ -11,18 +10,18 @@ type StatisticsRepo struct {
 	q *Queries
 }
 
-func InitStatisticsRepo(db *sql.DB) *StatisticsRepo {
+func InitStatisticsDatastore(db *sql.DB) *StatisticsRepo {
 	return &StatisticsRepo{
 		q: New(db),
 	}
 }
 
-func (s *StatisticsRepo) GetStatistic(ctx context.Context, id int32) (model.StatisticsDto, error) {
+func (s *StatisticsRepo) GetStatistic(ctx context.Context, id int32) (Statistic, error) {
 	stats, err := s.q.GetStatisticsByUrl(ctx, id)
 	if err != nil {
-		return model.StatisticsDto{}, fmt.Errorf("%w", err)
+		return Statistic{}, fmt.Errorf("%w", err)
 	}
-	return model.StatisticsDto{
+	return Statistic{
 		UrlID:           stats.UrlID,
 		TwentyFourHours: stats.TwentyFourHours,
 		LastSevenDays:   stats.LastSevenDays,

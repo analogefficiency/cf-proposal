@@ -2,10 +2,10 @@ package api
 
 import (
 	"cf-proposal/common/types"
-	"cf-proposal/domain/repository"
-	"cf-proposal/domain/services/historyservice"
-	"cf-proposal/domain/services/statisticsservice"
-	"cf-proposal/domain/services/urlservice"
+	"cf-proposal/domain/datastore"
+	"cf-proposal/domain/repo/historyrepository"
+	"cf-proposal/domain/repo/statisticsrepository"
+	"cf-proposal/domain/repo/urlrepository"
 	"context"
 	"net/http"
 
@@ -17,12 +17,12 @@ const createpath types.Path = "/create"
 const deletepath types.Path = "/delete/{id}"
 const statisticspath types.Path = "/{id}"
 
-var urlRepo *repository.UrlRepo
-var urlService *urlservice.Url
-var historyRepo *repository.HistoryRepo
-var historyService *historyservice.History
-var statisticsRepo *repository.StatisticsRepo
-var statisticsService *statisticsservice.Statistic
+var urldatastore *datastore.UrlRepo
+var urlrepo *urlrepository.Url
+var historydatastore *datastore.HistoryRepo
+var histrepo *historyrepository.History
+var statisticsdatastore *datastore.StatisticsRepo
+var statrepo *statisticsrepository.Statistic
 
 // TODO: Figure out how to either generalize middleware handlers; time permitting.
 func RedirectCtx(next http.Handler) http.Handler {
