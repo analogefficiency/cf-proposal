@@ -35,6 +35,14 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto model.UrlDto) (model.UrlDto
 	}, nil
 }
 
+func (u *UrlRepo) DeleteUrl(ctx context.Context, id int32) error {
+	err := u.q.DeleteUrl(ctx, id)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	return nil
+}
+
 func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUrlDto, error) {
 	returnValue, err := u.q.FindRedirectByShortUrl(ctx, shortUrl)
 	if err != nil {
@@ -46,10 +54,15 @@ func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUr
 	}, nil
 }
 
-func (u *UrlRepo) DeleteUrl(ctx context.Context, id int32) error {
-	err := u.q.DeleteUrl(ctx, id)
+func (u *UrlRepo) GetShortUrlByLongUrl(ctx context.Context, longUrl string) (model.UrlDto, error) {
+	url, err := u.q.FindShortUrlByLongUrl(ctx, longUrl)
 	if err != nil {
-		return fmt.Errorf("%w", err)
+		return model.UrlDto{}, fmt.Errorf("%w", err)
 	}
-	return nil
+	return model.UrlDto{
+		UrlID:        url.UrlID,
+		LongUrl:      url.LongUrl,
+		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
+		ExpirationDt: url.ExpirationDt,
+	}, nil
 }

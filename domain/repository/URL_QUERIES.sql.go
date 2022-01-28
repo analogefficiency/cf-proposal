@@ -56,3 +56,20 @@ func (q *Queries) FindRedirectByShortUrl(ctx context.Context, shortUrl string) (
 	err := row.Scan(&i.UrlID, &i.LongUrl)
 	return i, err
 }
+
+const findShortUrlByLongUrl = `-- name: FindShortUrlByLongUrl :one
+SELECT url_id, long_url, short_url, expiration_dt FROM URL
+WHERE long_url = $1
+`
+
+func (q *Queries) FindShortUrlByLongUrl(ctx context.Context, longUrl string) (Url, error) {
+	row := q.db.QueryRowContext(ctx, findShortUrlByLongUrl, longUrl)
+	var i Url
+	err := row.Scan(
+		&i.UrlID,
+		&i.LongUrl,
+		&i.ShortUrl,
+		&i.ExpirationDt,
+	)
+	return i, err
+}

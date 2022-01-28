@@ -1,7 +1,7 @@
 package model
 
 import (
-	"cf-proposal/common/errormessages"
+	"cf-proposal/common/messages"
 	"fmt"
 	"testing"
 )
@@ -12,8 +12,8 @@ func TestValidateCreateUrlFail(t *testing.T) {
 	}
 	err := dto.ValidateCreate()
 
-	if err.Error() != fmt.Sprintf(errormessages.INVALID_NULL_VALUE, "Long Url") {
-		t.Errorf("Error message not matching, expected: %s, received: %s", fmt.Sprintf(errormessages.INVALID_NULL_VALUE, "Long Url"), err.Error())
+	if err.Error() != fmt.Sprintf(messages.INVALID_NULL_VALUE, "Long Url") {
+		t.Errorf("Error message not matching, expected: %s, received: %s", fmt.Sprintf(messages.INVALID_NULL_VALUE, "Long Url"), err.Error())
 	}
 }
 

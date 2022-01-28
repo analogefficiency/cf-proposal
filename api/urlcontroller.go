@@ -3,6 +3,7 @@ package api
 import (
 	"cf-proposal/common/helper"
 	"cf-proposal/common/logservice"
+	"cf-proposal/common/messages"
 	"cf-proposal/common/types"
 	"cf-proposal/domain/model"
 	"cf-proposal/domain/repository"
@@ -11,6 +12,7 @@ import (
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -52,7 +54,6 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	var url model.UrlDto
 	err = json.Unmarshal(body, &url)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		helper.HandleHttpError(w, r, err, 422)
 		return
 	}
@@ -60,7 +61,12 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 	createdUrl, err := urlService.Create(context.Background(), url)
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-			helper.HandleHttpOk(w, r, model.LongUrlDto{}, 200)
+			logservice.LogInfo(fmt.Sprintf(messages.SHORT_URL_EXISTS, url.LongUrl))
+			urlDto, err := urlService.GetShortUrlByLongUrl(context.Background(), url.LongUrl)
+			if err != nil {
+				helper.HandleHttpError(w, r, err, 400)
+			}
+			helper.HandleHttpOk(w, r, urlDto, 200)
 		} else {
 			helper.HandleHttpError(w, r, err, 400)
 		}
