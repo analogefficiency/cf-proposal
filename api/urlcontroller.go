@@ -11,6 +11,7 @@ import (
 	"cf-proposal/domain/services/urlservice"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -90,6 +91,10 @@ func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
 	data, err := urlService.GetLongUrl(context.Background(), shortUrl)
 	if err != nil {
+		if strings.Contains(err.Error(), sql.ErrNoRows.Error()) {
+			helper.HandleHttpError(w, r, &helper.CustomError{Message: fmt.Sprintf(messages.SHORT_URL_DOES_NOT_EXIST, shortUrl)}, 400)
+			return
+		}
 		helper.HandleHttpError(w, r, err, 400)
 		return
 	}
