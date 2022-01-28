@@ -6,6 +6,10 @@ VALUES($1, $2, $3) RETURNING *;
 DELETE FROM URL 
 WHERE url_id = $1;
 
+-- name: GetUrl :one
+SELECT * FROM URL
+WHERE url_id = $1;
+
 -- name: FindRedirectByShortUrl :one
 SELECT url_id, long_url FROM URL
 WHERE short_url = $1;

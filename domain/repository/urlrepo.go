@@ -2,6 +2,7 @@ package repository
 
 import (
 	"cf-proposal/common/helper"
+	"cf-proposal/common/messages"
 	"cf-proposal/domain/model"
 	"context"
 	"database/sql"
@@ -41,6 +42,19 @@ func (u *UrlRepo) DeleteUrl(ctx context.Context, id int32) error {
 		return fmt.Errorf("%w", err)
 	}
 	return nil
+}
+
+func (u *UrlRepo) GetUrl(ctx context.Context, id int32) (model.UrlDto, error) {
+	url, err := u.q.GetUrl(ctx, id)
+	if err != nil {
+		return model.UrlDto{}, &helper.CustomError{Message: fmt.Sprintf(messages.ENTITY_DOES_NOT_EXIST, "Short Url", id)}
+	}
+	return model.UrlDto{
+		UrlID:        url.UrlID,
+		LongUrl:      url.LongUrl,
+		ShortUrl:     url.ShortUrl,
+		ExpirationDt: url.ExpirationDt,
+	}, nil
 }
 
 func (u *UrlRepo) GetLongUrl(ctx context.Context, shortUrl string) (model.LongUrlDto, error) {

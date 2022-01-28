@@ -26,8 +26,8 @@ func Init(repo StatisticsRepo) *Statistic {
 
 func (s *Statistic) GetStatistic(ctx context.Context, id string) (model.StatisticsDto, error) {
 
-	convertedId, convErr := strconv.Atoi(id)
-	if convErr != nil {
+	convertedId, err := strconv.Atoi(id)
+	if err != nil {
 		return model.StatisticsDto{}, &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
 	}
 	statistic, err := s.repo.GetStatistic(ctx, int32(convertedId))
@@ -40,7 +40,7 @@ func (s *Statistic) GetStatistic(ctx context.Context, id string) (model.Statisti
 				AllTime:         0,
 			}, nil
 		}
-		return model.StatisticsDto{}, fmt.Errorf("%w", err)
+		return model.StatisticsDto{}, &helper.CustomError{Message: err.Error()}
 	}
 	return statistic, nil
 }

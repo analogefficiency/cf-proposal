@@ -73,3 +73,20 @@ func (q *Queries) FindShortUrlByLongUrl(ctx context.Context, longUrl string) (Ur
 	)
 	return i, err
 }
+
+const getUrl = `-- name: GetUrl :one
+SELECT url_id, long_url, short_url, expiration_dt FROM URL
+WHERE url_id = $1
+`
+
+func (q *Queries) GetUrl(ctx context.Context, urlID int32) (Url, error) {
+	row := q.db.QueryRowContext(ctx, getUrl, urlID)
+	var i Url
+	err := row.Scan(
+		&i.UrlID,
+		&i.LongUrl,
+		&i.ShortUrl,
+		&i.ExpirationDt,
+	)
+	return i, err
+}
