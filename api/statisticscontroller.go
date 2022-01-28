@@ -36,5 +36,5 @@ func (sc StatisticsController) HandleGetStatistics(w http.ResponseWriter, r *htt
 		return
 	}
 
-	helper.HandleHttpOk(w, r, data)
+	helper.HandleHttpOk(w, r, data, http.StatusOK)
 }

@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi"
 )
@@ -58,11 +59,15 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	createdUrl, err := urlService.Create(context.Background(), url)
 	if err != nil {
-		helper.HandleHttpError(w, r, err, 400)
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			helper.HandleHttpOk(w, r, model.LongUrlDto{}, 200)
+		} else {
+			helper.HandleHttpError(w, r, err, 400)
+		}
 		return
 	}
 
-	helper.HandleHttpOk(w, r, createdUrl)
+	helper.HandleHttpOk(w, r, createdUrl, http.StatusCreated)
 }
 
 func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
