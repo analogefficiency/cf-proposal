@@ -30,7 +30,7 @@ func (u *UrlRepo) Create(ctx context.Context, urlDto Url) (Url, error) {
 	return Url{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
-		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
+		ShortUrl:     url.ShortUrl,
 		ExpirationDt: url.ExpirationDt,
 	}, nil
 }
@@ -75,7 +75,7 @@ func (u *UrlRepo) GetShortUrlByLongUrl(ctx context.Context, longUrl string) (Url
 	return Url{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
-		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
+		ShortUrl:     url.ShortUrl,
 		ExpirationDt: url.ExpirationDt,
 	}, nil
 }

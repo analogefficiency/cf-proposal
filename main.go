@@ -2,6 +2,7 @@ package main
 
 import (
 	"cf-proposal/api"
+	"cf-proposal/domain/service"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"log"
 	"net/http"
@@ -17,8 +18,10 @@ func main() {
 	log.Printf("Starting up on http://localhost:%s", port)
 	sqlite3helper.InitDb("shortener")
 
+	// Init Services
+	service.UrlService{}.InitService()
+
 	// Init Controllers
-	api.UrlController{}.InitController()
 	api.StatisticsController{}.InitController()
 
 	// Define Routes
