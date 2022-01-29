@@ -7,9 +7,9 @@ import (
 	"cf-proposal/domain/repo/urlrepository"
 )
 
-var urldatastore *datastore.UrlRepo
+var urldatastore *datastore.UrlDatastore
 var urlrepo *urlrepository.Url
-var historydatastore *datastore.HistoryRepo
+var historydatastore *datastore.HistoryDatastore
 var histrepo *historyrepository.History
-var statisticsdatastore *datastore.StatisticsRepo
+var statisticsdatastore *datastore.StatisticsDatastore
 var statrepo *statisticsrepository.Statistic

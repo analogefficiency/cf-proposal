@@ -7,17 +7,17 @@ import (
 	"time"
 )
 
-type HistoryRepo struct {
+type HistoryDatastore struct {
 	q *Queries
 }
 
-func InitHistoryDatastore(db *sql.DB) *HistoryRepo {
-	return &HistoryRepo{
+func InitHistoryDatastore(db *sql.DB) *HistoryDatastore {
+	return &HistoryDatastore{
 		q: New(db),
 	}
 }
 
-func (u *HistoryRepo) Create(ctx context.Context, id int32) (History, error) {
+func (u *HistoryDatastore) Create(ctx context.Context, id int32) (History, error) {
 	entry, err := u.q.InsertUrlHistory(ctx, InsertUrlHistoryParams{
 		UrlID:    id,
 		AccessDt: time.Now().Format("2006-01-02 15:04:05"),

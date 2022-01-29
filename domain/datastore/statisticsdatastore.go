@@ -6,17 +6,17 @@ import (
 	"fmt"
 )
 
-type StatisticsRepo struct {
+type StatisticsDatastore struct {
 	q *Queries
 }
 
-func InitStatisticsDatastore(db *sql.DB) *StatisticsRepo {
-	return &StatisticsRepo{
+func InitStatisticsDatastore(db *sql.DB) *StatisticsDatastore {
+	return &StatisticsDatastore{
 		q: New(db),
 	}
 }
 
-func (s *StatisticsRepo) GetStatistic(ctx context.Context, id int32) (Statistic, error) {
+func (s *StatisticsDatastore) GetStatistic(ctx context.Context, id int32) (Statistic, error) {
 	stats, err := s.q.GetStatisticsByUrl(ctx, id)
 	if err != nil {
 		return Statistic{}, fmt.Errorf("%w", err)
