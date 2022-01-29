@@ -20,9 +20,7 @@ func main() {
 
 	// Init Services
 	service.UrlService{}.InitService()
-
-	// Init Controllers
-	api.StatisticsController{}.InitController()
+	service.StatisticsService{}.InitService()
 
 	// Define Routes
 	r := chi.NewRouter()
