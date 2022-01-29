@@ -30,11 +30,12 @@ func TestValidateCreateUrlIsInvalid(t *testing.T) {
 
 func TestValidateCreateUrlOk(t *testing.T) {
 	dto := UrlDto{
-		LongUrl: "https://hawaiinewnow.com",
+		LongUrl:      "https://hawaiinewsnow.com",
+		ExpirationDt: "sfsefsef",
 	}
 	err := dto.ValidateCreate()
 
-	if err != nil {
-		t.Error("Error not expected")
+	if err.Error() != fmt.Sprintf(messages.INVALID_DATETIME, dto.ExpirationDt) {
+		t.Errorf("Error message not matching, expected: %s, received: %s", fmt.Sprintf(messages.INVALID_DATETIME, dto.ExpirationDt), err.Error())
 	}
 }
