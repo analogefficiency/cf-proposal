@@ -1,7 +1,9 @@
 package sqlite3helper
 
 import (
+	"cf-proposal/common/logservice"
 	"database/sql"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -25,12 +27,13 @@ func getTables() map[string]string {
 
 func initTables(db *sql.DB, filename string) {
 
+	logservice.LogInfo("Seeding database from ddl")
 	for table, filepath := range getTables() {
 		content, err := ioutil.ReadFile(filepath)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Creating %s table from %s", table, filepath)
+		logservice.LogInfo(fmt.Sprintf("Executing %s script from %s", table, filepath))
 		createTable(db, string(content))
 	}
 }

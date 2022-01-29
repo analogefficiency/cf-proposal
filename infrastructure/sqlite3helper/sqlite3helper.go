@@ -1,6 +1,7 @@
 package sqlite3helper
 
 import (
+	"cf-proposal/common/logservice"
 	"database/sql"
 	"fmt"
 	"log"
@@ -17,17 +18,17 @@ func InitDb(dbname string) {
 	_, err := os.Stat(filename)
 	if err != nil {
 		if os.IsNotExist(err) {
-			log.Printf("No Sqlite3 database found in project root, creating.")
+			logservice.LogInfo("No Sqlite3 database found in project root, creating.")
 			file, err := os.Create(filename)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 			file.Close()
-			log.Printf("Sqlite3 database created")
+			logservice.LogInfo("Sqlite3 database created")
 			buildSchema = true
 		}
 	} else {
-		log.Printf("Existing sqlite3 database found in project root")
+		logservice.LogInfo("Existing sqlite3 database found in project root")
 	}
 
 	DbConn, err = sql.Open("sqlite3", filename)
@@ -38,5 +39,5 @@ func InitDb(dbname string) {
 	if buildSchema {
 		initTables(DbConn, filename)
 	}
-	log.Printf("Sqlite3 database ready!")
+	logservice.LogInfo("Sqlite3 database ready!")
 }

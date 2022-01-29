@@ -2,8 +2,10 @@ package main
 
 import (
 	"cf-proposal/api"
+	"cf-proposal/common/logservice"
 	"cf-proposal/domain/service"
 	"cf-proposal/infrastructure/sqlite3helper"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -15,7 +17,7 @@ func main() {
 	port := "9000"
 
 	// Init Database
-	log.Printf("Starting up on http://localhost:%s", port)
+	logservice.LogInfo(fmt.Sprintf("Starting up on http://localhost:%s", port))
 	sqlite3helper.InitDb("shortener")
 
 	// Init Services
