@@ -2,12 +2,9 @@ package statisticsrepository
 
 import (
 	"cf-proposal/common/helper"
-	"cf-proposal/common/messages"
 	"cf-proposal/domain/datastore"
 	"context"
 	"database/sql"
-	"fmt"
-	"strconv"
 )
 
 type StatisticsInterface interface {
@@ -24,17 +21,13 @@ func Init(repo StatisticsInterface) *Statistic {
 	}
 }
 
-func (s *Statistic) GetStatistic(ctx context.Context, id string) (datastore.Statistic, error) {
+func (s *Statistic) GetStatistic(ctx context.Context, id int) (datastore.Statistic, error) {
 
-	convertedId, err := strconv.Atoi(id)
-	if err != nil {
-		return datastore.Statistic{}, &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
-	}
-	statistic, err := s.repo.GetStatistic(ctx, int32(convertedId))
+	statistic, err := s.repo.GetStatistic(ctx, int32(id))
 	if err != nil {
 		if err.Error() == sql.ErrNoRows.Error() {
 			return datastore.Statistic{
-				UrlID:           int32(convertedId),
+				UrlID:           int32(id),
 				TwentyFourHours: 0,
 				LastSevenDays:   0,
 				AllTime:         0,

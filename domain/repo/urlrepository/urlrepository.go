@@ -35,13 +35,9 @@ func (u *Url) Create(ctx context.Context, urlDto datastore.Url) (datastore.Url, 
 	return urlDto, nil
 }
 
-func (u *Url) DeleteUrl(ctx context.Context, id string) error {
+func (u *Url) DeleteUrl(ctx context.Context, id int32) error {
 
-	convertedId, err := strconv.Atoi(id)
-	if err != nil {
-		return &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
-	}
-	err = u.repo.DeleteUrl(ctx, int32(convertedId))
+	err := u.repo.DeleteUrl(ctx, id)
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}

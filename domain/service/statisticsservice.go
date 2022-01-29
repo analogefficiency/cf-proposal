@@ -1,12 +1,16 @@
 package service
 
 import (
+	"cf-proposal/common/helper"
+	"cf-proposal/common/messages"
 	"cf-proposal/domain/datastore"
 	"cf-proposal/domain/model"
 	"cf-proposal/domain/repo/statisticsrepository"
 	"cf-proposal/domain/repo/urlrepository"
 	"cf-proposal/infrastructure/sqlite3helper"
 	"context"
+	"fmt"
+	"strconv"
 )
 
 type StatisticsService struct{}
@@ -24,7 +28,12 @@ func (ss StatisticsService) GetStatistic(id string) (model.StatisticsDto, error)
 	if err != nil {
 		return model.StatisticsDto{}, err
 	}
-	statistic, err := statrepo.GetStatistic(context.Background(), id)
+
+	convertedId, err := strconv.Atoi(id)
+	if err != nil {
+		return model.StatisticsDto{}, &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
+	}
+	statistic, err := statrepo.GetStatistic(context.Background(), convertedId)
 	if err != nil {
 		return model.StatisticsDto{}, err
 	}

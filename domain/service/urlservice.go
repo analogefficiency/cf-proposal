@@ -70,7 +70,7 @@ func (us UrlService) DeleteUrl(id string) error {
 	}
 	rows, err := histrepo.Delete(context.Background(), int32(convertedId))
 	logservice.LogInfo(fmt.Sprintf("%d rows deleted from history", rows))
-	return urlrepo.DeleteUrl(context.Background(), id)
+	return urlrepo.DeleteUrl(context.Background(), int32(convertedId))
 }
 
 func (us UrlService) RedirectUrl(shortUrl string) (string, error) {
