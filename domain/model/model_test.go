@@ -6,13 +6,24 @@ import (
 	"testing"
 )
 
-func TestValidateCreateUrlFail(t *testing.T) {
+func TestValidateCreateUrlIsEmpty(t *testing.T) {
 	dto := UrlDto{
 		LongUrl: "",
 	}
 	err := dto.ValidateCreate()
 
 	if err.Error() != fmt.Sprintf(messages.INVALID_NULL_VALUE, "Long Url") {
+		t.Errorf("Error message not matching, expected: %s, received: %s", fmt.Sprintf(messages.INVALID_NULL_VALUE, "Long Url"), err.Error())
+	}
+}
+
+func TestValidateCreateUrlIsInvalid(t *testing.T) {
+	dto := UrlDto{
+		LongUrl: "http///youtube.com",
+	}
+	err := dto.ValidateCreate()
+
+	if err.Error() != fmt.Sprintf(messages.INVALID_URL, dto.LongUrl) {
 		t.Errorf("Error message not matching, expected: %s, received: %s", fmt.Sprintf(messages.INVALID_NULL_VALUE, "Long Url"), err.Error())
 	}
 }
