@@ -31,3 +31,11 @@ func (u *HistoryDatastore) Create(ctx context.Context, id int32) (History, error
 		AccessDt: entry.AccessDt,
 	}, nil
 }
+
+func (u *HistoryDatastore) Delete(ctx context.Context, id int32) (int64, error) {
+	rows, err := u.q.DeleteUrlHistoryById(ctx, id)
+	if err != nil {
+		return 1, fmt.Errorf("%w", err)
+	}
+	return rows, nil
+}

@@ -12,6 +12,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -63,6 +64,12 @@ func (us UrlService) CreateUrl(dto model.UrlDto) (model.UrlDto, error) {
 }
 
 func (us UrlService) DeleteUrl(id string) error {
+	convertedId, err := strconv.Atoi(id)
+	if err != nil {
+		return &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
+	}
+	rows, err := histrepo.Delete(context.Background(), int32(convertedId))
+	logservice.LogInfo(fmt.Sprintf("%d rows deleted from history", rows))
 	return urlrepo.DeleteUrl(context.Background(), id)
 }
 

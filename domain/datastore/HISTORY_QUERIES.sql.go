@@ -7,6 +7,19 @@ import (
 	"context"
 )
 
+const deleteUrlHistoryById = `-- name: DeleteUrlHistoryById :execrows
+DELETE FROM HISTORY
+WHERE url_id = $1
+`
+
+func (q *Queries) DeleteUrlHistoryById(ctx context.Context, urlID int32) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteUrlHistoryById, urlID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const insertUrlHistory = `-- name: InsertUrlHistory :one
 INSERT INTO HISTORY (url_id, access_dt)
 VALUES($1, $2) RETURNING history_id, url_id, access_dt
