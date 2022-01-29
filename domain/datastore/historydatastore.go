@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"cf-proposal/common"
 	"context"
 	"database/sql"
 	"fmt"
@@ -20,7 +21,7 @@ func InitHistoryDatastore(db *sql.DB) *HistoryDatastore {
 func (u *HistoryDatastore) Create(ctx context.Context, id int32) (History, error) {
 	entry, err := u.q.InsertUrlHistory(ctx, InsertUrlHistoryParams{
 		UrlID:    id,
-		AccessDt: time.Now().Format("2006-01-02 15:04:05"),
+		AccessDt: time.Now().Format(common.DATETIME_FORMAT),
 	})
 	if err != nil {
 		return History{}, fmt.Errorf("%w", err)

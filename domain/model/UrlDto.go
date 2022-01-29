@@ -1,6 +1,7 @@
 package model
 
 import (
+	"cf-proposal/common"
 	"cf-proposal/common/messages"
 	"fmt"
 	"net/url"
@@ -31,7 +32,7 @@ func (dto UrlDto) ValidateCreate() error {
 	}
 
 	if dto.ExpirationDt != "" {
-		_, err := time.Parse("2006-01-02 15:04:05", dto.ExpirationDt)
+		_, err := time.Parse(common.DATETIME_FORMAT, dto.ExpirationDt)
 		if err != nil {
 			message := fmt.Sprintf(messages.INVALID_DATETIME, dto.ExpirationDt)
 			if findings != nil {
