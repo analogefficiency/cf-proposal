@@ -10,7 +10,7 @@ var (
 	MockGetUrl           datastore.Url
 	MockGetLongUrl       datastore.Url
 	MockGetShortUrl      datastore.Url
-	MockError            error
+	MockGetUrlError      error
 	MockGetShortUrlError error
 	MockGetLongUrlError  error
 	MockCreateError      error
@@ -28,7 +28,7 @@ func (urm UrlRepoMock) DeleteUrl(ctx context.Context, id int32) error {
 }
 
 func (urm UrlRepoMock) GetUrl(ctx context.Context, id int32) (datastore.Url, error) {
-	return MockGetUrl, MockError
+	return MockGetUrl, MockGetUrlError
 }
 
 func (urm UrlRepoMock) GetLongUrl(ctx context.Context, shortUrl string) (datastore.Url, error) {

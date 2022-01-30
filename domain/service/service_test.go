@@ -6,6 +6,7 @@ import (
 	"cf-proposal/domain/datastore"
 	"cf-proposal/domain/model"
 	"cf-proposal/domain/repo/historyrepository"
+	"cf-proposal/domain/repo/statisticsrepository"
 	"cf-proposal/domain/repo/urlrepository"
 	"database/sql"
 	"fmt"
@@ -45,7 +46,7 @@ func TestCreateUrlOkExisting(t *testing.T) {
 		ShortUrl:     helper.GetShortUrl(url),
 		ExpirationDt: "",
 	}
-	urlrepository.MockError = fmt.Errorf("UNIQUE constraint failed")
+	urlrepository.MockGetUrlError = fmt.Errorf("UNIQUE constraint failed")
 	urlrepository.MockGetShortUrlError = nil
 
 	created, err := UrlService{}.CreateUrl(model.UrlDto{
@@ -131,5 +132,43 @@ func TestDeleteOk(t *testing.T) {
 	err := UrlService{}.DeleteUrl("1")
 	if err != nil {
 		t.Errorf("Expected no error.")
+	}
+}
+
+func TestGetStatisticOk(t *testing.T) {
+	urlrepo = urlrepository.Init(urlrepository.UrlRepoMock{})
+	statrepo = statisticsrepository.Init(statisticsrepository.StatisticsRepoMock{})
+
+	statisticsrepository.MockGetStatisticEntity = datastore.Statistic{
+		UrlID:           1,
+		TwentyFourHours: 1,
+		LastSevenDays:   2,
+		AllTime:         4,
+	}
+	statisticsrepository.MockGetStatisticError = nil
+
+	urlrepository.MockGetUrlError = nil
+
+	statistic, err := StatisticsService{}.GetStatistic("1")
+	if err != nil {
+		t.Errorf("Expected no error.")
+	}
+
+	if statisticsrepository.MockGetStatisticEntity != datastore.Statistic(statistic) {
+		t.Errorf("Expected statistic not matching struct sent to mock")
+	}
+}
+
+func TestGetStatisticFail(t *testing.T) {
+	urlrepo = urlrepository.Init(urlrepository.UrlRepoMock{})
+	statrepo = statisticsrepository.Init(statisticsrepository.StatisticsRepoMock{})
+
+	statisticsrepository.MockGetStatisticEntity = datastore.Statistic{}
+	statisticsrepository.MockGetStatisticError = nil
+	urlrepository.MockGetUrlError = &helper.CustomError{Message: "Not found"}
+
+	_, err := StatisticsService{}.GetStatistic("1")
+	if err.Error() != "Not found" {
+		t.Errorf("Expected a not found error")
 	}
 }
