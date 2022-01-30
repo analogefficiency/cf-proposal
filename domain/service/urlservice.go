@@ -16,9 +16,17 @@ import (
 	"strings"
 )
 
-type UrlService struct{}
+var UrlService UrlServiceFunctions = urlservice{}
 
-func (us UrlService) InitService() {
+type UrlServiceFunctions interface {
+	CreateUrl(dto model.UrlDto) (model.UrlDto, error)
+	DeleteUrl(id string) error
+	RedirectUrl(shortUrl string) (string, error)
+}
+
+type urlservice struct{}
+
+func InitUrlService() {
 	urldatastore = datastore.InitUrlDatastore(sqlite3helper.DbConn)
 	historydatastore = datastore.InitHistoryDatastore(sqlite3helper.DbConn)
 
@@ -26,7 +34,7 @@ func (us UrlService) InitService() {
 	histrepo = historyrepository.Init(historydatastore)
 }
 
-func (us UrlService) CreateUrl(dto model.UrlDto) (model.UrlDto, error) {
+func (us urlservice) CreateUrl(dto model.UrlDto) (model.UrlDto, error) {
 
 	err := dto.ValidateCreate()
 	if dto.ValidateCreate() != nil {
@@ -63,7 +71,7 @@ func (us UrlService) CreateUrl(dto model.UrlDto) (model.UrlDto, error) {
 	}, nil
 }
 
-func (us UrlService) DeleteUrl(id string) error {
+func (us urlservice) DeleteUrl(id string) error {
 	convertedId, err := strconv.Atoi(id)
 	if err != nil {
 		return &helper.CustomError{Message: fmt.Sprintf(messages.TYPE_MISMATCH, "id", "string", "int")}
@@ -73,7 +81,7 @@ func (us UrlService) DeleteUrl(id string) error {
 	return urlrepo.DeleteUrl(context.Background(), int32(convertedId))
 }
 
-func (us UrlService) RedirectUrl(shortUrl string) (string, error) {
+func (us urlservice) RedirectUrl(shortUrl string) (string, error) {
 	url, err := urlrepo.GetLongUrl(context.Background(), shortUrl)
 	if err != nil {
 		if strings.Contains(err.Error(), sql.ErrNoRows.Error()) {

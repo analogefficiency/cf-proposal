@@ -21,7 +21,7 @@ func main() {
 	sqlite3helper.InitDb("shortener")
 
 	// Init Services
-	service.UrlService{}.InitService()
+	service.InitUrlService()
 	service.StatisticsService{}.InitService()
 
 	// Define Routes

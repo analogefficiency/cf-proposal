@@ -43,7 +43,7 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdUrl, err := service.UrlService{}.CreateUrl(url)
+	createdUrl, err := service.UrlService.CreateUrl(url)
 	if err != nil {
 		helper.HandleHttpError(w, r, err, 400)
 		return
@@ -53,7 +53,7 @@ func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("id").(string)
-	err := service.UrlService{}.DeleteUrl(id)
+	err := service.UrlService.DeleteUrl(id)
 	if err != nil {
 		logservice.LogError(http.StatusBadGateway, r.Method, types.Path(r.URL.Path), err)
 	} else {
@@ -63,7 +63,7 @@ func (uc UrlController) HandleDelete(w http.ResponseWriter, r *http.Request) {
 
 func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
-	longUrl, err := service.UrlService{}.RedirectUrl(shortUrl)
+	longUrl, err := service.UrlService.RedirectUrl(shortUrl)
 	if err != nil {
 		logservice.LogError(http.StatusBadGateway, r.Method, types.Path(r.URL.Path), err)
 	}
