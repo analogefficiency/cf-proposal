@@ -25,8 +25,6 @@ func (uc UrlController) UrlRoutes() chi.Router {
 	return r
 }
 
-// Add Handlers below here, in alpha order
-
 func (uc UrlController) HandleCreate(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
