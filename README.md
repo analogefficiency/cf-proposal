@@ -1,5 +1,5 @@
-# cf-proposal
-Sample URL Shortener Service
+# URL Shortener
+The URL shortener is a backend service written in Go that provides the functionality to generate a shortened version of a url. Often employee may have a link to share; however, is to long to fit in their document, text, web form, etc. Via the URL shortener they can pass a "long url" as a parameter and retrive a shorter, fixed length URL for their purposes. Employee's may also delete short urls and view statistics on usage. 
 
 # Solution Details
 The following are inferred from the Overview and Expectation of the Cloudflare API Interview Coding Project.
@@ -12,7 +12,7 @@ The following are inferred from the Overview and Expectation of the Cloudflare A
 - [X] **R6** Supports short links can be deleted
 - [X] **R7** Project should be able to be runnable locally with some simple instructions
 - [X] **R8** Project's documentation should include build and deploy instruction
-- [ ] **R9** Tests should be provided and able to be executed locally or within a test environment.
+- [X] **R9** Tests should be provided and able to be executed locally or within a test environment.
 
 ## Implementation
 The following is a summary of the implementation of each of the items outlined in the `Requirements` section above:
@@ -26,7 +26,7 @@ The following is a summary of the implementation of each of the items outlined i
 - **R6**: Solution supports a delete endpoint, deleting short url associated with the url id passed via path parameter.
 - **R7**: Solution provides a Docker file for building and running a docker container locally on desktop.
 - **R8**: Solution README.MD provides build information for how to create and run docker container hosting application.
-- **R9**: 
+- **R9**: Solution README.MD provides information on how to run provided unit tests.
 
 ## Assumptions
 As defined by Overview and Expectations of Cloudflare API Interview Coding Project
@@ -41,8 +41,9 @@ Confirmed by Rupalim on Jan 25, 2022
 
 Un-verified
 
-6. Code coverage target is undefined
-7. Security related requirements not defined at this time. See future considerations no. 7 for details 
+6. If the URL is already "short", it may not be a suitable use case for this solution. For example, "https://a.com" probably would not need to have it's URL shortened to most uses. 
+7. Code coverage target is undefined
+8. Security related requirements not defined at this time. See future considerations no. 7 for details 
 
 
 # API
@@ -144,6 +145,12 @@ Start the application container via the following command:
 
 Press `Ctrl-C` to stop the container. 
 
+# Testing
+The following describes how to run the unit tests for this project.
+1. If not already, install go using the documentation projected [here](https://go.dev/doc/install), and clone the repository into your preferred workspace.
+2. From the project root, run the following command: `go test ./...`
+3. Alternatively, for any package with unit test file `*_test.go`, from its parent directory run the command: `go test` 
+
 # Design Decisions
 
 ## Application Layering
@@ -195,3 +202,6 @@ The following is a list of items I noted as area's for improvement, not within t
 5. URL length checking, comparing the submitted `LongUrl` against what the resulting `ShortUrl` would be. I'd argue they should be able to create the short url regardless, but have a front-end system warn them that the short url would be longer. 
 6. Currently passing the database connection as a global variable; I went with this approach to move forward with developing, but i'd like to review other patterns for what would be more appropirate.
 7. Current docker file implements this service over HTTP instead of HTTPS. Short URL data is directly viewable to those with database access. Should the administrators of the service be able to view the contents of a long url? Given the scope of the proposal, this is more engineering than is required, but is a potential question to product owners when addessing how this data is managed. 
+8. The code for "seeding" the database relies on relative paths, works for now but won't scale well. 
+9. Code grabbing port information should pull from os environment variables instead of being hard coded. 
+10. 
