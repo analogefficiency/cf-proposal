@@ -6,4 +6,4 @@ var SHORT_URL_DOES_NOT_EXIST = "M003: https://localhost:9000/%s does not exist, 
 var TYPE_MISMATCH = "M004: Recieved %s of type %s, wanted %s."
 var ENTITY_DOES_NOT_EXIST = "M005: %s: %d does not exist."
 var INVALID_URL = "M006: %s is not a valid url."
-var INVALID_DATETIME = "M007: %s is not a validate datetime format. Exepecting YYYY-mm-dd HH:MM:SS"
+var INVALID_DATETIME = "M007: %s is not a validate datetime format. Expecting YYYY-mm-dd HH:MM:SS"

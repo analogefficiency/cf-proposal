@@ -203,5 +203,4 @@ The following is a list of items I noted as area's for improvement, not within t
 6. Currently passing the database connection as a global variable; I went with this approach to move forward with developing, but i'd like to review other patterns for what would be more appropirate.
 7. Current docker file implements this service over HTTP instead of HTTPS. Short URL data is directly viewable to those with database access. Should the administrators of the service be able to view the contents of a long url? Given the scope of the proposal, this is more engineering than is required, but is a potential question to product owners when addessing how this data is managed. 
 8. The code for "seeding" the database relies on relative paths, works for now but won't scale well. 
-9. Code grabbing port information should pull from os environment variables instead of being hard coded. 
-10. 
+9. Code grabbing port information should pull from os environment variables instead of being hard coded.
