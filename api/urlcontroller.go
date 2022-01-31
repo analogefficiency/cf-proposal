@@ -65,8 +65,9 @@ func (uc UrlController) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	shortUrl := r.Context().Value("shortUrl").(string)
 	longUrl, err := service.UrlService{}.RedirectUrl(shortUrl)
 	if err != nil {
-		logservice.LogError(http.StatusBadGateway, r.Method, types.Path(r.URL.Path), err)
+		helper.HandleHttpError(w, r, err, 400)
+	} else {
+		logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
+		http.Redirect(w, r, longUrl, http.StatusFound)
 	}
-	logservice.LogHttpRequest(http.StatusOK, r.Method, types.Path(r.URL.Path))
-	http.Redirect(w, r, longUrl, http.StatusFound)
 }
