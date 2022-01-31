@@ -1,51 +1,123 @@
 # cf-proposal
 Sample URL Shortener Service
 
-# Minimum Viable Product
-- [X] POST Endpoint taking in a LONG URL returning a SHORT URL
-- [X] GET Endpoint that redirects short urls to the requested long URL
-- [X] GET Endpoint returning access statistics for each short URL (24 hours, past week, all time)
-- [X] Short URLS can expire or live forever
-- [X] Data survives restarts
-- [X] DELETE Endpoint allowing a short URL to be deleted
-- [X] Runnable locally with simple instructions
-- [X] Documentation includes build and deploy instructions
-- [ ] Tests able to be executed locally OR within a test environment 
+# Solution Details
+The following are inferred from the Overview and Expectation of the Cloudflare API Interview Coding Project.
+## Requirements
+- [X] **R1** Short url data model defined as: (**R1.1**) Has one long url (**R1.2**) No duplicates are allowed (**R1.3**) Short links can expire or remain indefinitely.  
+- [X] **R2** Supports generating a short url from a long url. 
+- [X] **R3** Supports redirecting a short url to a long url. 
+- [X] **R4** Supports listing the number of times a short url has been accessed in the last 24 hours, past week, and all time. 
+- [X] **R5** Supports data persistence (must survive computer restarts) 
+- [X] **R6** Supports short links can be deleted
+- [X] **R7** Project should be able to be runnable locally with some simple instructions
+- [X] **R8** Project's documentation should include build and deploy instruction
+- [ ] **R9** Tests should be provided and able to be executed locally or within a test environment.
+
+## Implementation
+The following is a summary of the implementation of each of the items outlined in the `Requirements` section above:
+- **R1.1**: In data model, entity for url defines column for LongUrl 
+- **R1.2**: In data model, entity for url defines `short_url`, and `long_url` as having a UNIQUE constraint.
+- **R1.3**: In data model, entity for url defines an additional field, `expiration_dt` allowing a date of expiration to be specified for future functionality.
+- **R2**: Solution supports a creation endpoint, returning a short url.
+- **R3**: Solution supports a get endpoint, performing a http redirect to the associated long url, if existing.
+- **R4**: Solution supports a get endpoint, retrieving information from a view aggregating rows from a history table. When short urls are accessed the system records a row in the history table.
+- **R5**: Solution persists data to a sqlite3 database (file remains on file system on an after start).
+- **R6**: Solution supports a delete endpoint, deleting short url associated with the url id passed via path parameter.
+- **R7**: Solution provides a Docker file for building and running a docker container locally on desktop.
+- **R8**: Solution README.MD provides build information for how to create and run docker container hosting application.
+- **R9**: 
+
+## Assumptions
+As defined by Overview and Expectations of Cloudflare API Interview Coding Project
+1. Choose whichever languages and frameworks you would like for this exercise
+2. Utilize any folder/file hierarchy that makes sense to you any folder/file hierarchy that makes sense to you. 
+3. You can implement it in any way you see fit, including whatever backend functionality that you think makes sense
+
+Confirmed by Rupalim on Jan 25, 2022
+
+4. Short links can expire, but data model just needs to support this feature. No expiration functionality required at this time.
+5. Front-end not necessary.
+
+Un-verified
+
+6. Code coverage target is undefined
+7. Security related requirements not defined at this time. See future considerations no. 7 for details 
+
 
 # API
-**Redirect short url to a long url**
-```
-       Path: /{shortUrl}
-     Method: GET
-Description: Redirects request to perform GET request of URL associated with the path parameter, shortUrl
- Parameters: @pathparameter - shortUrl: Hashed version of the long url assocated with the short url
-```
-**Creating a short url**
-```
-       Path: /url/create
-     Method: POST
-Description: Creates short url based on values provided in request body
- Parameters: @json { LongUrl: String, AccessDt: String }
-    Returns: @json { UrlId: int32, LongUrl: String, ShortUrl: String, AccessDt: String }
-```
-**Deleting a short url**
+## Redirect short url to a long url
+The short url behind the scenes is a hash that is passed to the base url via a **path parameter**. If the hash for the short url is found, the user will be redirected to the long url on record. A entry will also be made to the history table to record the shorl url being used. If no match is found, the API will return error code 400 with an error specifying that the url has not been found. 
 
-```
-       Path: /url/delete/{id}
-     Method: DELETE
-Description: Deletes short url based on id provided in path parameters
- Parameters: @pathparamter - id: The id for the short url
-```
-**Getting statistics for a short url**
+### GET /{shorturl}
+**Example Response**
 
+_Redirected to_ `LongUrl` _on record_
+
+**Example Error**
 ```
-       Path: /statistics/{id}
-     Method: GET
-Description: Retrives statistics for a given short url id. Returns usage of short url within last 24 hours, 7 days, and all time. 
- Parameters: @pathparameter - id: The id for the short url
-    Returns: @json { UrlId: int32, TwentyFourHours: int32, LastSevenDays: int32, AllTime: int32 }
+{
+    "Error": "M003: https://localhost:9000/nonexisting does not exist, double-check to see if the URL is correct."
+}
+```
+## Create a short url
+To create a short url, you pass a JSON object containing a `LongUrl` and optionally `ExpirationDt`. If successful, a object containing `UrlId`, `LongUrl`, `ShortlUrl`, and `ExpirationDt` will be returned. If the `LongUrl` is null, empty or invalid - you will be send back an error response with a corresponding validation error message. Additionally, if a `ExpirationDt` is passed but has an invalid format, you will also receive a validation response. 
+### POST /url/create
+**Example Body**
+```
+{
+    "LongUrl": "https://hawaiinewsnow.com",
+    "ExpirationDt": "2023-09-01 12:00:00"
+}
+```
+**Example Response**
+```
+{
+    "UrlID": 4,
+    "LongUrl": "https://hawaiinewsnow.com",
+    "ShortUrl": "http://localhost:9000/4459c2ab",
+    "ExpirationDt": "2023-09-01 12:00:00"
+}
+```
+**Example Error(s)**
+```
+{
+    "Error": "M001: Long Url is required."
+}
+```
+```
+{
+    "Error": "M006: htt////hawaiinewsnow.com is not a valid url."
+}
+```
+```
+{
+    "Error": "M007: Jan 21 21 120500 is not a validate datetime format. Exepecting YYYY-mm-dd HH:MM:SS"
+}
 ```
 
+## Get statistics for a short url
+Statistics for when a short url is accessed within the list 24-hours, 7-days, and all time are recorded. To get the statistics for a short url, pass the `UrlId` of the short url as a path parameter. If the short url exists, you will be returned a JSON object containing statistics for the short url. If the short url does not exist, a error message will be returned. 
+### GET /statistics/{urlid}
+**Example Response**
+```
+{
+    "UrlID": 1,
+    "TwentyFourHours": 0,
+    "LastSevenDays": 0,
+    "AllTime": 0
+}
+```
+**Example Error**
+```
+{
+    "Error": "M005: Short Url: 24 does not exist."
+}
+```
+
+## Delete a short url
+To delete a url, pass the `UrlId` of the short url as a path parameter. When a short url is deleted, any associated rows in the history table are also deleted.
+### POST /url/delete/{urlid}
 
 # Build Information
 🚨 These instuctions are based on a OSX workstation using [homebrew](https://brew.sh/). 
@@ -72,51 +144,54 @@ Start the application container via the following command:
 
 Press `Ctrl-C` to stop the container. 
 
-
-# Assumptions
-
 # Design Decisions
-
-## API Implementation
-The API implementation is a fairly simple implementation consisting of the 4 endpoints for the purposes of facilitating the funcitons described in the MVP above. 
-- The action associated with redirection sits at the root of the service ("/"). This is to reduce the total length of the URL 
-- Actions associated with actions on short urls are prefixed with /url
-- Actions associated with retriving statistics are prefixed with /statistics
 
 ## Application Layering
 The application is split into 4 layers: 
 - Controller: Route management and entry point to endpoints.
 - Service: Where code related to domain knowledge is performed.
-- Repo: Provides an interface to the actions in the persistence layer. 
-- Persistence: Directly interacting with the database to manipulate the data model. In this project, this was autogenerated via sqlc.
+- Repo: Provides an interface to the actions in the datastore. 
+- Datastore: Directly interacting with the database to manipulate the data model. Some of this code was autogenerated via sqlc.
+
+Validation is handled via the DTO passed into the endpoints. 
 
 ## Data Model
 [Data Dictionary](https://docs.google.com/spreadsheets/d/1lYeBe29FgTnOEaFF-xYTOj10ipwja7ZW6d8-eWqQOho/edit?usp=sharing)
 
 The above linked Google Sheet is a depiction of the data model current in use. As summary of the more notable decisions is as follows:
 - **Date fields using TEXT typing**: Sqlite does not have a native date type but the built-in date functions can infer date so long as the string or integer is in the correct format. 
-- **Statistics View**: To reduce the code necessary at the service layer, the statistics view aggregates the "entrys" by their defined date conditions. See `statistics.sql` for details on how the statistics are calculated. The service layer just reads from the view for the particular url requested.
+- **Statistics View**: To reduce the code necessary at the service layer, the statistics view aggregates history table rows by defined date conditions. See `statistics.sql` for details on how the statistics are calculated. The view is referenced by datastore layer, accessible to the service layer via the repository.
 - **Expiration Date**: To future proof short urls supporting expiration, an additional field is added to capture a expiration date if desired. 
 
 ## Stack
+This section desribes the rationale behind why specific stack elements were used.
 ### Golang
-Originally, I had intended to do this project in Java using Spring Boot; however, my personal machine was already set up for Go. The rationale I made was, I felt I knew enough in Go to get started, and could look up gap areas where needed - reducing setup time. 
+Originally, I had intended to do this project in Java using Spring Boot; however, my personal machine was already set up for Go development. Weighing the options I felt that being able to start development quicker would be more beneficial and specific implementation info could be looked up. 
 
 ### Sqlite3
-Provides a relational db without setup overhead, keeping focus on development of MVP. In addition, allows persistence of data after shutdown as opposed to a pure in memory db solution.  
+Provides a relational db without setup overhead, allowing focus on the development of MVP. In addition:
+- Allows persistence of data after shutdown since can remain on the filesystem.
+- Quick tear of DB via file deletion.
+- Accessible via third party client for direct manipulation of sql and sandboxing.    
 
-### sqlc
-A Golang code generator which compiles sql. Leveraged this to write out the data model and queries via sql, and save time on writing the persistence layer code. 
+### [sqlc](https://github.com/kyleconroy/sqlc)
+A Golang code generator which compiles sql. Leveraged this to write out the data model and queries via sql, and save time on writing the datastore layer code. 
 
 ### Docker
 Leveraging Docker to simplify build environment for those checking out the project.
 
 ### Postman
-For testing endpoints
+For testing endpoints.
 
 ### [DB Browser for SQL Lite](https://sqlitebrowser.org/):
 Provides a GUI interface to the sqlite database used for development locally. Primary used for debugging and verfication. 
 
-## Trade-offs
-1. A validator of some sort will be needed for the UrlDto payload; however, foregoing a validation layer until MVP is achived. Run risk of burning too many hours going into the different permutations for a URL and date. If time allows i'll circle around and add validation there. 
-2. Passing database connection as a global variable. Would like to spend more time looking at implementing another pattern, but current implementation is working - will focus on remaining MVP items. 
+## Future Condiderations
+The following is a list of items I noted as area's for improvement, not within the scope of the solution requirements, but merit future consideration.
+1. As part of the validation, confirming that the `LongUrl` being passed actually returns a response code of 200 - to prevent users from creating short urls to "dead" links. As a follow on, a scheduled service (yearly) that validates the `LongUrl` still works, potentially alerting the owner of the url (not implemented)
+2. The API currently returns a error message for short urls that to not reference a long url. The redirect could go to a 404 page outlining potential reasons for error.
+3. Documentation for the API is currently typed out in this README.md file. Preferably, the documentation could be managed by Swagger or Twilio.
+4. I feel like a potential use case for getting the statistics on the endpoints would be sending the logs to a third-party service for aggregation and reporting instead, creating an interface collecting relevant information for end-user consumption. 
+5. URL length checking, comparing the submitted `LongUrl` against what the resulting `ShortUrl` would be. I'd argue they should be able to create the short url regardless, but have a front-end system warn them that the short url would be longer. 
+6. Currently passing the database connection as a global variable; I went with this approach to move forward with developing, but i'd like to review other patterns for what would be more appropirate.
+7. Current docker file implements this service over HTTP instead of HTTPS. Short URL data is directly viewable to those with database access. Should the administrators of the service be able to view the contents of a long url? Given the scope of the proposal, this is more engineering than is required, but is a potential question to product owners when addessing how this data is managed. 
