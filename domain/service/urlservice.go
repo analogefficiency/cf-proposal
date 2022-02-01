@@ -1,6 +1,7 @@
 package service
 
 import (
+	"cf-proposal/common"
 	"cf-proposal/common/helper"
 	"cf-proposal/common/logservice"
 	"cf-proposal/common/messages"
@@ -48,7 +49,7 @@ func (us UrlService) CreateUrl(dto model.UrlDto) (model.UrlDto, error) {
 			return model.UrlDto{
 				UrlID:        url.UrlID,
 				LongUrl:      url.LongUrl,
-				ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
+				ShortUrl:     fmt.Sprintf("%s/%s", common.BASE_URL, url.ShortUrl),
 				ExpirationDt: url.ExpirationDt,
 			}, nil
 		} else {
@@ -58,7 +59,7 @@ func (us UrlService) CreateUrl(dto model.UrlDto) (model.UrlDto, error) {
 	return model.UrlDto{
 		UrlID:        url.UrlID,
 		LongUrl:      url.LongUrl,
-		ShortUrl:     fmt.Sprintf("http://localhost:9000/%s", url.ShortUrl),
+		ShortUrl:     fmt.Sprintf("%s/%s", common.BASE_URL, url.ShortUrl),
 		ExpirationDt: url.ExpirationDt,
 	}, nil
 }

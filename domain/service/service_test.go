@@ -1,6 +1,7 @@
 package service
 
 import (
+	"cf-proposal/common"
 	"cf-proposal/common/helper"
 	"cf-proposal/common/messages"
 	"cf-proposal/domain/datastore"
@@ -31,7 +32,7 @@ func TestCreateUrlOk(t *testing.T) {
 		t.Fatal("%w", err)
 	}
 
-	expected := fmt.Sprintf("http://localhost:9000/%s", helper.GetShortUrl(url))
+	expected := fmt.Sprintf("%s/%s", common.BASE_URL, helper.GetShortUrl(url))
 	if created.ShortUrl != expected {
 		t.Errorf(fmt.Sprintf("Short URL expected: %s got %s", created.ShortUrl, expected))
 	}
@@ -56,7 +57,7 @@ func TestCreateUrlOkExisting(t *testing.T) {
 		t.Errorf("Creation error")
 	}
 
-	expected := fmt.Sprintf("http://localhost:9000/%s", helper.GetShortUrl(url))
+	expected := fmt.Sprintf("%s/%s", common.BASE_URL, helper.GetShortUrl(url))
 	if created.ShortUrl != expected {
 		t.Errorf(fmt.Sprintf("Short URL expected: %s got %s", created.ShortUrl, expected))
 	}
