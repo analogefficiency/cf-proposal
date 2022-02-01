@@ -125,7 +125,7 @@ To delete a url, pass the `UrlId` of the short url as a path parameter. When a s
 
 Clone the repo at your preferred workspace location
 
-`git clone https://github.com/analogefficiency/cf-proposal.git`
+`git clone https://github.com/rmortal/cf-proposal.git`
 
 This project will be using `Docker` to build and run the application. Docker can be installed via the following command:
 
