@@ -29,7 +29,7 @@ The following is a summary of the implementation of each of the items outlined i
 - **R9**: Solution README.MD provides information on how to run provided unit tests.
 
 ## Assumptions
-As defined by Overview and Expectations of Cloudflare API Interview Coding Project
+As defined by Overview and Expectations of provided abstract
 1. Choose whichever languages and frameworks you would like for this exercise
 2. Utilize any folder/file hierarchy that makes sense to you any folder/file hierarchy that makes sense to you. 
 3. You can implement it in any way you see fit, including whatever backend functionality that you think makes sense
