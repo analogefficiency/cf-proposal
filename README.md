@@ -2,7 +2,7 @@
 The URL shortener is a backend service written in Go that provides the functionality to generate a shortened version of a url. An employee may have a link to share; however, the url is to long to fit in their document, text, web form, etc. Via the URL shortener they can pass a "long url" as a parameter and retrive a shorter, fixed length URL for their purposes. Employee's may also delete short urls and view statistics on usage.
 
 # Solution Details
-The following are inferred from the Overview and Expectation of the Cloudflare API Interview Coding Project.
+The following are inferred from the provided abstract
 ## Requirements
 - [X] **R1** Short url data model defined as: (**R1.1**) Has one long url (**R1.2**) No duplicates are allowed (**R1.3**) Short links can expire or remain indefinitely.  
 - [X] **R2** Supports generating a short url from a long url. 
